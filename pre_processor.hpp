@@ -2,27 +2,30 @@
 #define __PRE_PROCESSOR_H__
 
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
-class preProcessor{
-
+class preProcessor
+{
 
 public:
 
-	struct{
+	typedef struct {
 		string name;
 		int arg;
 		int line;
 	}mnt;
 
-	struct{
+	typedef struct{
 		string body;		
 	}mdt;
 
-	vector<mnt> MNT;
-	vector<mdt> MDT;
-}
+	vector<int> a;
+
+	vector <mnt> MNT;
+	vector <mdt> MDT;
+};
 
 
 #endif
