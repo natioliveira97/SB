@@ -2,12 +2,22 @@
 #define __PRE_PROCESSOR_H__
 
 #include <iostream>
-#include <vector>
+#include <fstream>
 
 using namespace std;
 
 class preProcessor
 {
+	
+private:
+
+string removeSpaceTab(string line);
+
+string removeComment(string line);
+
+void textTreatment(string filename);
+
+void preProcessor(string filename);
 
 public:
 
@@ -20,8 +30,6 @@ public:
 	typedef struct{
 		string body;		
 	}mdt;
-
-	vector<int> a;
 
 	vector <mnt> MNT;
 	vector <mdt> MDT;

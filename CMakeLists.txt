@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 project(Montador)
-#find_package(OpenCV REQUIRED)
-add_executable(Montador main.cpp pre_processor.hpp pre_processor.cpp)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+add_executable(tradutor main.cpp pre_processor.hpp pre_processor.cpp)
 target_link_libraries(Montador) # ${OpenCV_LIBS})
