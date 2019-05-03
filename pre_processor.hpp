@@ -34,6 +34,12 @@ string removeComment(string line);
 
 void textTreatment(string filename);
 
+string lowerCase(string token);
+
+bool isFunction(string token);
+
+int classificaToken(string token);
+
 void expandDirectives(string filename);
 
 
