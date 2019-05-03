@@ -1,11 +1,20 @@
+/** 
+	\file pre_processor.cpp
+	\author Natalia Oliveira Borges - 16/0015863
+	\author Lívia Gomes Costa Fonseca - 
+	\name Pré Processador
+*/
 
-#include <iostream>
-#include <fstream>
+#include "pre_processor.hpp"
 
 using namespace std;
 
-
-string removeSpaceTab(string line){
+/** \brief Remove espaços e tabs desnecessários.
+	\details Remove qualque tab. Remove espaço que não possui caractere antecessor, espaço no começo da linha e no fim da linha.
+	\param line Linha do arquivo texto.
+	\return Linha tratada sem tabs e espaços desnecessários.
+*/
+string preProcessor::removeSpaceTab(string line){
 	bool valid_character=false;
 	string newLine;
 
@@ -42,7 +51,12 @@ string removeSpaceTab(string line){
 	return newLine;
 }
 
-string removeComment(string line){
+/** \brief Remove comentários.
+	\details Remove tudo depois de ';'.
+	\param line Linha do arquivo texto.
+	\return Linha tratada sem comentários.
+*/
+string preProcessor::removeComment(string line){
 	string newLine;
 
 	if(!line.empty()){
@@ -60,36 +74,82 @@ string removeComment(string line){
 	return newLine;
 }
 
-void textTreatment(string filename){
+/** \brief Faz o tratamento do arquivo texto retiranto espaços desnecessários, tabs, enters e comentários.
+	\param filename Nome do arquivo sem extensão.
+	\return Essa função não possui retorno
+*/
+void preProcessor::textTreatment(string filename){
 	string filename1 = filename + ".asm";
 	string filename2 = filename + ".temp";
 
 	ifstream textFile(filename1);
-	ofstream preProcessedFile(filename2);
+	ofstream temporaryFile(filename2);
 
 	string line;
 	string newLine;
 
 	if(!textFile.is_open()){
-		cout << "Nao foi possivel abrir" << endl;
+		cout << "Nao foi possivel abrir arquivo" << endl;
 	}
-	if(!preProcessedFile.is_open()){
-		cout << "Nao foi possivel abrir" << endl;
+	if(!temporaryFile.is_open()){
+		cout << "Nao foi possivel abrir arquivo" << endl;
 	}
 	while(getline(textFile,line)){
 		newLine = removeSpaceTab(line);
 		newLine = removeComment(newLine);
 		if(!newLine.empty()){
 			newLine = newLine + "\n";
-			preProcessedFile << newLine;
+			temporaryFile << newLine;
 		}
 	}
 
 	textFile.close();
-	preProcessedFile.close();
+	temporaryFile.close();
 }
 
-void preProcessor(string filename){
+lineStruct preProcessor::lineStructure(string line){
+	string token;
+	int n = line.length();
+
+	for(int i=0; i<n; ++i){
+
+	}
+
+
+}
+
+void preProcessor::expandDirectives(string filename){
+	string filename1 = filename + ".temp";
+	string filename2 = filename + ".pre";
+	string line;
+
+	ifstream temporaryFile(filename1);
+	ofstream preProcessedFile(filename2);
+	if(!preProcessedFile.is_open()){
+		cout << "Nao foi possivel abrir arquivo" << endl;
+	}
+	if(!temporaryFile.is_open()){
+		cout << "Nao foi possivel abrir arquivo" << endl;
+	}
+
+	while(getline(temporaryFile,line)){
+
+
+
+	}
+
+
+
+
+
+
+	temporaryFile.close();
+	preProcessedFile.close();
+
+
+
+}
+void preProcessor::run(string filename){
 
 }
 
