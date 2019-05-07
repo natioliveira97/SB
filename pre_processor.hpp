@@ -1,7 +1,7 @@
-
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include "parser.hpp"
 
 using namespace std;
 
@@ -15,15 +15,7 @@ typedef struct{
 	string body;		
 }mdt;
 
-typedef struct{
-	string rot;
-	string directive;
-	string funct;
-	vector<string> arg;	
-	vector<string> macroArg;	
-}lineStruct;
-
-class preProcessor
+class preProcessor : public parser
 {
 
 private:
@@ -34,17 +26,7 @@ string removeComment(string line);
 
 void textTreatment(string filename);
 
-string lowerCase(string token);
-
-bool isFunction(string token);
-
-int classificaToken(string token);
-
 void expandDirectives(string filename);
-
-
-lineStruct lineStructure(string line);
-
 
 public:
 
