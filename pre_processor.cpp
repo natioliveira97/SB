@@ -94,6 +94,7 @@ void preProcessor::textTreatment(string filename){
 	if(!temporaryFile.is_open()){
 		cout << "Nao foi possivel abrir arquivo" << endl;
 	}
+
 	while(getline(textFile,line)){
 		newLine = removeSpaceTab(line);
 		newLine = removeComment(newLine);
@@ -108,15 +109,6 @@ void preProcessor::textTreatment(string filename){
 }
 
 
-// bool preProcessor::isFunction(string token){
-// 	vector<string> functions = {"add","sub","mul","div","jmp","jmpp","jmpz","copy","load","store","input","output","stop"};
-// 	for(int i=0; i<functions.size(); ++i){
-// 		if (token == functions[i]){
-// 			return true;
-// 		}
-// 	}
-// 	return false;
-// }
 
 void preProcessor::expandDirectives(string filename){
 	string filename1 = filename + ".temp";
@@ -140,14 +132,10 @@ void preProcessor::expandDirectives(string filename){
 
 
 
-
-
 	temporaryFile.close();
 	preProcessedFile.close();
-
-
-
 }
+
 void preProcessor::run(string filename){
 	textTreatment(filename);
 	expandDirectives(filename);

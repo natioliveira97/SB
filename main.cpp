@@ -3,6 +3,7 @@
 
 int main(){
 	string filename = "bin";
+	
 	preProcessor preProcessor;
 
 	preProcessor.run(filename);

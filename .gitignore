@@ -4,5 +4,4 @@ a.out
 *.pre
 CMakeCache.txt
 cmake_install.cmake
-Makefile
 tradutor
