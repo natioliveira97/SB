@@ -1,7 +1,7 @@
 /** 
 	\file scanner.cpp
 	\author Natalia Oliveira Borges - 16/0015863
-	\author Lívia Gomes Costa Fonseca - 
+	\author Lívia Gomes Costa Fonseca - 16/0034078
 	\name Scaner
 */
 
@@ -11,7 +11,7 @@ using namespace std;
 
 /** \brief Transforma uma string para lower case.
 	\param token
-	\return String não sensiva ao caso.
+	\return String não sensivel ao caso.
 */
 string scanner::lowerCase(string token){
 	string lowerCaseToken;
@@ -28,4 +28,18 @@ string scanner::lowerCase(string token){
 		lowerCaseToken=lowerCaseToken+c;
 	}
 	return lowerCaseToken;
+}
+
+/** \brief Verifica se o token a valido.
+	\param token
+	\return Booleano se o token a valido (1) ou não (0).
+*/
+bool scanner::isValido(string token){
+	regex regEx ("[_a-zA-Z][_a-zA-z0-9]{0,50}");
+	bool valido;
+
+	valido = regex_match(token, regEx);
+
+	return valido;
+
 }
