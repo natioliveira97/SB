@@ -2,8 +2,8 @@
 #include "pre_processor.hpp"
 
 int main(){
-	string filename = "bin";
-	
+	string filename = "triangulo";
+
 	preProcessor preProcessor;
 
 	preProcessor.run(filename);

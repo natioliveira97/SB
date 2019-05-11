@@ -2,8 +2,14 @@
 
 using namespace std;
 
+/** \brief Verifica se o token é uma função.
+	\param token 
+	\return 	true Se é função.
+				false Se não é função.
+*/
 bool parser::isFunction(string token){
 	vector<string> functions = {"add","sub","mul","div","jmp","jmpp","jmpz","copy","load","store","input","output","stop"};
+	token = lowerCase(token);
 	for(int i=0; i<functions.size(); ++i){
 		if (token == functions[i]){
 			return true;
@@ -12,22 +18,65 @@ bool parser::isFunction(string token){
 	return false;
 }
 
-/** \brief Classifica o token em rotulo, função ou diretiva e argumentos(de função ou macro)
-	\param line Linha do arquivo texto.
-	\return 	1 se é rótulo
-				2 se é nome de função
-				3 se é argumento de função
-				4 se é diretiva
-				5 se é argumento de macro
 
+/** \brief Verifica se o token é uma diretiva de pré processamento.
+	\param token 
+	\return 	true Se é diretiva.
+				false Se não é diretiva.
 */
-int parser::classificaToken(string token){
-	if(token.back()==':'){
-		return 1;
+bool parser::isDirective(string token){
+	vector<string> directives = {"macro", "end", "equ", "const", "space", "if"};
+	token = lowerCase(token);
+	for(int i=0; i<directives.size(); ++i){
+		if (token == directives[i]){
+			return true;
+		}
 	}
-	if(isFunction(token)){
-		return 2;
+	return false;	
+}
+
+bool parser::isArg(string token){
+	return false;
+	
+}
+
+/** \brief Verifica se o token é um argumento de macro.
+	\param token 
+	\return 	true Se é argumento de macro.
+				false Se não é argumento de macro.
+*/
+bool parser::isMacroArg(string token){
+	if(token.at(0) == '&'){
+		return true;
 	}
+	return false;	
+}
+
+/** \brief Verifica se o token é um sinal de '+'.
+	\param token 
+	\return 	true Se é um sinal de '+'.
+				false Se não é um sinal de '+'.
+*/
+bool parser::isPlusSign(string token){
+	if(token == "+"){
+		return true;
+	}
+	return false;
+}
+
+/** \brief Verifica se o token é um número'.
+	\param token 
+	\return 	true Se é um número.
+				false Se não é um número.
+*/
+bool parser::isNumber(string token){
+	int n = token.length();
+	for(int i=0; i<n; ++i){
+		if (token.at(i) < '0' || token.at(i) > '9'){
+			return false;
+		}
+	}
+	return true;
 }
 
 /** \brief Separa a linha em rotulo, função ou diretiva e argumentos
@@ -41,11 +90,55 @@ lineStruct parser::lineStructure(string line){
 
 	for(int i=0; i<n; ++i){
 		while(i<n &&line.at(i)!=' '){
-			token=token+line.at(i);
+			token = token+line.at(i);
 			++i;
 		}
-		cout<<token<<endl;
+		cout << token << endl;
+
+		// Se é um rótulo
+		if(token.back()==':'){
+			structure.rot = token;
+			structure.lineCode = structure.lineCode + "R";
+		}
+		// Se é função
+		else if(isFunction(token)){
+			structure.funct = token;
+			structure.lineCode = structure.lineCode + "F";
+
+		}
+		// Se é argumento de função
+		else if(isArg(token)){
+			structure.arg.push_back(token);
+			structure.lineCode = structure.lineCode + "A";
+		}
+		// Se é diretiva
+		else if(isDirective(token)){
+			structure.directive = token;
+			structure.lineCode = structure.lineCode + "D";
+		}
+		// Se é argumento de macro
+		else if(isMacroArg(token)){
+			structure.macroArg.push_back(token);
+			structure.lineCode = structure.lineCode + "E";
+		}
+		// Se é sinal de +
+		else if(isPlusSign(token)){
+			structure.lineCode = structure.lineCode + "S";
+		}
+		// Se é número
+		else if(isNumber(token)){
+			structure.number = token;
+			structure.lineCode = structure.lineCode + "N";
+		}
+		else{
+			structure.notDefined.push_back(token);
+			structure.lineCode = structure.lineCode + "Z";
+		}
 		token.erase();
 	}
 	return structure; 
+}
+
+void parser::sintaticError(int errorCode){
+	cout << "Erro" << endl;
 }

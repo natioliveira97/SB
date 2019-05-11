@@ -20,7 +20,14 @@ string preProcessor::removeSpaceTab(string line){
 
 	if(!line.empty()){
 		int n = line.length();
-		if(line.at(0)!=' ' && line.at(0)!='	'){
+
+		for(int i=0; i<n; ++i){
+			if(line.at(i)=='	'){
+				line.at(i) = ' ';
+			}
+		}
+
+		if(line.at(0)!=' '){
 			newLine = line.at(0);
 		}
 		
@@ -110,11 +117,16 @@ void preProcessor::textTreatment(string filename){
 
 
 
+
+
 void preProcessor::expandDirectives(string filename){
 	string filename1 = filename + ".temp";
 	string filename2 = filename + ".pre";
 	string line;
-	lineStruct lineS;
+	vector<equt> equTable;
+	int i_equt=0; //Indice vetor de EQU
+	bool writeLine;
+	bool writeNextLine;
 
 	ifstream temporaryFile(filename1);
 	ofstream preProcessedFile(filename2);
@@ -126,7 +138,40 @@ void preProcessor::expandDirectives(string filename){
 	}
 
 	while(getline(temporaryFile,line)){
-		cout<<line<<endl;
+		if(writeNextLine == false){
+			writeNextLine = true;
+			continue;
+		}
+
+		lineStruct structure;
+		cout << line << endl;
+		structure = lineStructure(line);
+
+		cout << structure.lineCode << endl;
+
+		if(!structure.directive.empty()){
+			if(structure.directive == "equ"){
+				if(structure.lineCode != "RDN"){
+					sintaticError(0);
+				}
+				equTable.push_back(equt());
+				equTable[i_equt].rot = structure.rot;
+				equTable[i_equt].value = structure.number;
+			}
+			if(structure.directive == "if"){
+				if(structure.lineCode == "DN"){
+					if(!atoi(structure.number)){
+						writeNextLine = false;
+					}
+				}
+				if(structure.lineCode == "DZ"){
+					for(i=0; i<equt.size(); ++i){
+						if(structure.)
+					}
+				}
+			}
+		}
+
 	}
 
 

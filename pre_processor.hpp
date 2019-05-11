@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 #include <fstream>
 #include <vector>
 #include "parser.hpp"
@@ -15,18 +16,23 @@ typedef struct{
 	string body;		
 }mdt;
 
+typedef struct{
+	string rot;
+	string value;
+}equt;
+
 class preProcessor : public parser
 {
 
 private:
 
-string removeSpaceTab(string line);
+	string removeSpaceTab(string line);
 
-string removeComment(string line);
+	string removeComment(string line);
 
-void textTreatment(string filename);
+	void textTreatment(string filename);
 
-void expandDirectives(string filename);
+	void expandDirectives(string filename);
 
 public:
 
