@@ -37,7 +37,6 @@ bool parser::isDirective(string token){
 
 bool parser::isArg(string token){
 	return false;
-	
 }
 
 /** \brief Verifica se o token é um argumento de macro.
@@ -104,7 +103,6 @@ lineStruct parser::lineStructure(string line){
 		else if(isFunction(token)){
 			structure.funct = token;
 			structure.lineCode = structure.lineCode + "F";
-
 		}
 		// Se é argumento de função
 		else if(isArg(token)){

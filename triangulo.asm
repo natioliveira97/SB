@@ -14,3 +14,4 @@ SECTION DATA
 	H:		SPACE
 	R:		SPACE
 	DOIS:	CONST		2
+	coisa: space TRIANGULO

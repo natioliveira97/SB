@@ -116,6 +116,20 @@ void preProcessor::textTreatment(string filename){
 }
 
 
+int findInEquTable(vector<equt> equTable, string token){
+	string equ;
+	for(int i=0; i<equTable.size(); ++i){
+		equ = equTable[i].rot;
+		equ.pop_back();
+		if(token == equ){
+			cout << "e um if "<< equ << " " << equTable[i].rot << endl;
+			return i;
+		}
+	}
+	return -1;
+}
+
+
 
 
 
@@ -124,9 +138,10 @@ void preProcessor::expandDirectives(string filename){
 	string filename2 = filename + ".pre";
 	string line;
 	vector<equt> equTable;
+	int f_equt=0; //Ultimo elemento da tabela de EQU
 	int i_equt=0; //Indice vetor de EQU
-	bool writeLine;
-	bool writeNextLine;
+	bool writeNextLine = true;
+	int section = 0; //Define em qual sessao o codigo se encontra (0-nao esta na text nem na data, 1-text, 2-data)
 
 	ifstream temporaryFile(filename1);
 	ofstream preProcessedFile(filename2);
@@ -137,41 +152,77 @@ void preProcessor::expandDirectives(string filename){
 		cout << "Nao foi possivel abrir arquivo" << endl;
 	}
 
-	while(getline(temporaryFile,line)){
-		if(writeNextLine == false){
-			writeNextLine = true;
-			continue;
-		}
+	//Percorre todas as linhas do arquivo e ...
+	//Antes da sessão text é possível ter EQUs e definição de MACROS, guarda essas variáveis em tabelas e nada é escrito no arquivo pré-processado
+	//Na sessão text é possível ter IFs e chamadas de MACROS
+	//Na sessão data é possível ter chamada de EQUs
 
+	while(getline(temporaryFile,line)){
 		lineStruct structure;
 		cout << line << endl;
 		structure = lineStructure(line);
 
 		cout << structure.lineCode << endl;
+		if(lowerCase(line)=="section text"){
+			section = 1;
+			preProcessedFile << line <<"\n";
+			continue;
+		}
+		if(lowerCase(line)=="section data"){
+			section = 2;
+			preProcessedFile << line <<"\n";
+			continue;
+		}
 
-		if(!structure.directive.empty()){
-			if(structure.directive == "equ"){
-				if(structure.lineCode != "RDN"){
-					sintaticError(0);
-				}
-				equTable.push_back(equt());
-				equTable[i_equt].rot = structure.rot;
-				equTable[i_equt].value = structure.number;
-			}
-			if(structure.directive == "if"){
-				if(structure.lineCode == "DN"){
-					if(!atoi(structure.number)){
-						writeNextLine = false;
+		//Os EQUs e as MACROS são definidos antes da sessão texto
+		if(section == 0){
+			if(!structure.directive.empty()){
+				//Se é declaração de EQU
+				if(lowerCase(structure.directive) == "equ"){
+					printf("tem equ\n");
+					if(structure.lineCode != "RDN"){
+						sintaticError(0);
 					}
+					equTable.push_back(equt());
+					equTable[f_equt].rot = lowerCase(structure.rot);
+					equTable[f_equt].value = structure.number;
 				}
-				if(structure.lineCode == "DZ"){
-					for(i=0; i<equt.size(); ++i){
-						if(structure.)
+				//Se é declaração de MACRO
+
+			}
+		}
+
+		//Na sessão texto há chamadas de macros e IFs
+		else if(section == 1){
+			if(!structure.directive.empty()){
+				if(lowerCase(structure.directive) == "if"){
+					printf("tem if\n");
+					if(structure.lineCode == "DN"){
+						if(!stoi(structure.number)){
+							writeNextLine = false;
+						}
+					}
+					if(structure.lineCode == "DZ"){
+						i_equt = findInEquTable(equTable, lowerCase(structure.notDefined[0]));
+						if(i_equt!=-1){
+							if(!stoi(equTable[i_equt].value)){
+								writeNextLine = false;
+							}
+						}					
 					}
 				}
 			}
 		}
 
+		else if(section == 2){
+			if(structure.lineCode == "RDZ"){
+				i_equt = findInEquTable(equTable, lowerCase(structure.notDefined[0]));
+				preProcessedFile << structure.rot << " " << structure.directive << " " << equTable[i_equt].value << "\n";
+			}
+			else{
+				preProcessedFile << line << "\n";
+			}
+		}
 	}
 
 
