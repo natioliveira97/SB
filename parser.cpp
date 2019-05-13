@@ -92,7 +92,6 @@ lineStruct parser::lineStructure(string line){
 			token = token+line.at(i);
 			++i;
 		}
-		cout << token << endl;
 
 		// Se é um rótulo
 		if(token.back()==':'){

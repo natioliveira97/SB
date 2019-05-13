@@ -7,14 +7,11 @@
 using namespace std;
 
 typedef struct {
-	string name;
-	int arg;
+	string rot;
+	int argNumber;
+	vector<string> arg;
 	int line;
 }mnt;
-
-typedef struct{
-	string body;		
-}mdt;
 
 typedef struct{
 	string rot;
@@ -34,10 +31,31 @@ private:
 
 	void expandDirectives(string filename);
 
+	int findInEQUT(string token);
+
+	void fillMNT(lineStruct structure);
+
+	int findMNT(string token);
+
+	void fillMDT();
+
+	void macroInsideMacro(int start);
+
+	void expandMacro(int mnt_pos, lineStruct structure);
+
+
 public:
 
 	vector <mnt> MNT;
-	vector <mdt> MDT;
+	vector<string> MDT;
+	vector<equt> EQUT;
+
+	ifstream textFile;
+	ofstream temporaryFile1;
+	ifstream temporaryFile2;
+	ofstream preProcessedFile;
+
+	int f_mdt; //Aponta para o fim da mdt
 
 	void run(string filename);
 };

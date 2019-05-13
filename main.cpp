@@ -2,7 +2,7 @@
 #include "pre_processor.hpp"
 
 int main(){
-	string filename = "triangulo";
+	string filename = "fatorial";
 
 	preProcessor preProcessor;
 
