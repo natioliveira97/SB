@@ -41,8 +41,8 @@ bool parser::isArg(string token){
 
 /** \brief Verifica se o token é um argumento de macro.
 	\param token 
-	\return 	true Se é argumento de macro.
-				false Se não é argumento de macro.
+	\return true Se é argumento de macro.
+			false Se não é argumento de macro.
 */
 bool parser::isMacroArg(string token){
 	if(token.at(0) == '&'){
@@ -63,7 +63,7 @@ bool parser::isPlusSign(string token){
 	return false;
 }
 
-/** \brief Verifica se o token é um número'.
+/** \brief Verifica se o token é um número.
 	\param token 
 	\return 	true Se é um número.
 				false Se não é um número.
@@ -71,7 +71,7 @@ bool parser::isPlusSign(string token){
 bool parser::isNumber(string token){
 	int n = token.length();
 	for(int i=0; i<n; ++i){
-		if (token.at(i) < '0' || token.at(i) > '9'){
+		if ((token.at(i) < '0' || token.at(i) > '9')){
 			return false;
 		}
 	}

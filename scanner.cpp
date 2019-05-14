@@ -30,9 +30,10 @@ string scanner::lowerCase(string token){
 	return lowerCaseToken;
 }
 
-/** \brief Verifica se o token a valido.
+/** \brief Verifica se o token a válido.
 	\param token
-	\return Booleano se o token a valido (1) ou não (0).
+	\return true Se o token a válido.
+			false Se o token não é válido.
 */
 bool scanner::isValido(string token){
 	regex regEx ("[_a-zA-Z][_a-zA-z0-9]{0,50}");

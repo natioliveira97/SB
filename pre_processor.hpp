@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <cstdio>
 #include <fstream>
 #include <vector>
 #include "parser.hpp"
@@ -39,9 +40,9 @@ private:
 
 	void fillMDT();
 
-	void macroInsideMacro(int start);
+	bool ifs(lineStruct structure);
 
-	void expandMacro(int mnt_pos, lineStruct structure);
+	void expandMacro(int mnt_pos, lineStruct structure, bool inMDT);
 
 
 public:
@@ -54,8 +55,6 @@ public:
 	ofstream temporaryFile1;
 	ifstream temporaryFile2;
 	ofstream preProcessedFile;
-
-	int f_mdt; //Aponta para o fim da mdt
 
 	void run(string filename);
 };

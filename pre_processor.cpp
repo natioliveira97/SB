@@ -1,7 +1,7 @@
 /** 
 	\file pre_processor.cpp
 	\author Natalia Oliveira Borges - 16/0015863
-	\author Lívia Gomes Costa Fonseca - 
+	\author Lívia Gomes Costa Fonseca -
 	\name Pré Processador
 */
 
@@ -10,7 +10,7 @@
 using namespace std;
 
 /** \brief Remove espaços e tabs desnecessários.
-	\details Remove qualque tab. Remove espaço que não possui caractere antecessor, espaço no começo da linha e no fim da linha.
+	\details Remove qualquer tab. Remove espaço que não possui caractere antecessor, espaço no começo da linha e no fim da linha.
 	\param line Linha do arquivo texto.
 	\return Linha tratada sem tabs e espaços desnecessários.
 */
@@ -115,7 +115,11 @@ void preProcessor::textTreatment(string filename){
 	temporaryFile1.close();
 }
 
-
+/** \brief Procura declaração na tabela de EQUs e retorna a posição que a declaração se encontra na tabela.
+	\param token Rótulo a ser procurado na tabela.
+	\return Posição da declaração na tabela.
+			-1 Caso não esteja na tabela.
+*/
 int preProcessor::findInEQUT(string token){
 	string equ;
 	for(int i=0; i<EQUT.size(); ++i){
@@ -128,23 +132,34 @@ int preProcessor::findInEQUT(string token){
 	return -1;
 }
 
+/** \brief Preenche uma sessão da MNT.
+	\details Prenche a MNT com nome da macro, quantidade de argumentos, nome dos argumentos e linha da MDT em que a macro começa.
+	\param structure Estrutura da linha.
+	\return Essa função não possui retorno.
+*/
 void preProcessor::fillMNT(lineStruct structure){
-	//Linhas permitidas RD, RDE, RDEE, RDEEE
+	//Não permite macros com mais de 3 argumentos
 	if(structure.macroArg.size() > 3){
 		sintaticError(0);
 	}
-	string rot = structure.rot;
-	rot.pop_back();
-	MNT.push_back(mnt());
-	MNT[MNT.size()-1].rot = rot;
-	MNT[MNT.size()-1].argNumber = structure.macroArg.size();
-	for(int i=0; i<structure.macroArg.size(); ++i){
-		MNT[MNT.size()-1].arg.push_back(structure.macroArg[i]);
+	else {
+		string rot = structure.rot;
+		rot.pop_back();
+		MNT.push_back(mnt());
+		MNT[MNT.size()-1].rot = rot;
+		MNT[MNT.size()-1].argNumber = structure.macroArg.size();
+		for(int i=0; i<structure.macroArg.size(); ++i){
+			MNT[MNT.size()-1].arg.push_back(structure.macroArg[i]);
+		}
+		MNT[MNT.size()-1].line = MDT.size();
 	}
-	MNT[MNT.size()-1].line = f_mdt;
-
 }
 
+/** \brief Procura declaração na tabela MNT e retorna a posição que a declaração se encontra na tabela.
+	\param token Rótulo a ser procurado na tabela.
+	\return Posição da declaração na tabela.
+			-1 Caso não esteja na tabela.
+*/
 int preProcessor::findMNT(string token){
 	for(int i=0; i<MNT.size(); ++i){
 		if(token == MNT[i].rot){
@@ -154,90 +169,136 @@ int preProcessor::findMNT(string token){
 	return -1;
 }
 
+/** \brief Preenche a MDT.
+	\details Prenche a MDT com o corpo da macro verificando se a macro chama outra dentro dela mesma.
+	\return Essa função não possui retorno.
+*/
 void preProcessor::fillMDT(){
 	string line;
+	bool writeNextLine = true;
 	while(getline(temporaryFile2,line)){
+		if(writeNextLine == false){
+			writeNextLine = true;
+			continue;
+		}
+
+		bool isMacroInsideMacro = false;
 		lineStruct structure;
 		structure = lineStructure(line);
 
-		int n = structure.notDefined.size();
-
 		//Verifica macro dentro de macro
+		int n = structure.notDefined.size();
 		for(int i=0; i<n; ++i){
-			int isMacro = findMNT(structure.notDefined[i]);
-			if(isMacro!=-1){
-				macroInsideMacro(isMacro);
+			int mnt_pos = findMNT(structure.notDefined[i]);
+			if(mnt_pos!=-1){
+				expandMacro(mnt_pos, structure, true);
+				isMacroInsideMacro = true;
+			}
+		}
+		//Verifica if dentro de macro
+		if(!structure.directive.empty()){
+			writeNextLine = ifs(structure);
+			if(writeNextLine == false){
+				continue;
 			}
 		}
 
-		MDT.push_back(line);
-		++f_mdt;
+		if(!isMacroInsideMacro){
+			MDT.push_back(line);
+		}
 		if(lowerCase(structure.directive) == "end"){
 			break;
 		}
 	}
-
 }
 
-void preProcessor::macroInsideMacro(int start){
-	int i = start;
-	while(lowerCase(MDT[i])!="end"){
-		MDT.push_back(MDT[i]);
-		++i;
-		++f_mdt;
+/** \brief Verifica diretiva if.
+	\param structure Estrutura da linha.
+	\return true Se próxima linha será parte do código.
+			false Se próxima linha não seŕa parte do código.
+*/
+bool preProcessor::ifs(lineStruct structure){
+	int i_equt;
+	if(lowerCase(structure.directive) == "if"){
+		//IF com numero
+		if(structure.lineCode == "DN"){
+			if(!stoi(structure.number)){
+				return  false;
+			}
+		}
+		//IF com chamada de EQU
+		if(structure.lineCode == "DZ"){
+			i_equt = findInEQUT(lowerCase(structure.notDefined[0]));
+			if(i_equt!=-1){
+				if(!stoi(EQUT[i_equt].value)){
+					return  false;
+				}
+			}					
+		}
 	}
+	return true;
 }
 
-void preProcessor::expandMacro(int mnt_pos, lineStruct structure){
+/** \brief Expande uma macro depois que ela é chamada.
+	\details Expande uma macro chamada no arquvo pré processado ou dentro da MDT, caso uma macro seja chamada dentro
+			 outra macro. Verifica os argumentos e substitui pelo devido rótulo.
+	\param mnt_pos Posição na MNT da macro chamada.
+	\param structure Estrutura da linha.
+	\param inMDT Indica a função se a macro deve ser expandida no arquivo pré processado ou na MDT.
+	\return Essa função não possui retorno.
+*/
+void preProcessor::expandMacro(int mnt_pos, lineStruct structure, bool inMDT){
 	int i = MNT[mnt_pos].line;
 	int isThereArg = MNT[mnt_pos].argNumber;
 
+	//Erro se o número de argumentos passados não é igual ao número de argumento da macro.
 	if(isThereArg){
 		if(structure.notDefined.size()!=isThereArg+1){
 			sintaticError(0);
 		}
 	}
-	cout << " QUantidade de argumentos: " << isThereArg << endl; 
 
 	while(lowerCase(MDT[i]) != "end"){
 		string line = MDT[i];
-		cout << "Linha ainda nao extendida: "<<line<<endl;
+		lineStruct structure2 = lineStructure(line);
 		for(int j=0; j<isThereArg; ++j){
-			cout << "1" << endl;
 			int found = line.find(MNT[mnt_pos].arg[j]);
-			cout << "2" << endl;
 			if(found!=string::npos){
-				cout << "3" << endl;
+				// Substitui parâmetros por rótulos
 				line.replace(found, MNT[mnt_pos].arg[j].size(), structure.notDefined[j+1]);
-				cout << "4" << endl;
 			}
 		}
-					
-		preProcessedFile << line << '\n';
-		cout << "Linha macro expandida:"<< line << '\n';
-		++i;
-		
+
+		if(inMDT){
+			MDT.push_back(line);
+		}
+		else{
+			preProcessedFile << line << '\n';
+		}				
+		++i;	
 	}
 }
 
-
-
+/** \brief Trata a declaração e chamada de EQUs, IFs e MACROS.
+	\details Preenche as tabelas MNT, MDT e EQUT e trata as chamadas dessas macros.
+	\param filename Nome do arquivo sem extensão.
+	\return Essa função não possui retorno.
+*/
 void preProcessor::expandDirectives(string filename){
 	string filename1 = filename + ".temp";
 	string filename2 = filename + ".pre";
 	string line;
-	int f_equt=0; //Ultimo elemento da tabela de EQU
-	int i_equt=0; //Indice vetor de EQU
+	int i_equt = 0; //Indice vetor de EQU
 	bool writeNextLine = true;
 	int section = 0; //Define em qual sessao o codigo se encontra (0-nao esta na text nem na data, 1-text, 2-data)
 
 	temporaryFile2.open(filename1);
 	preProcessedFile.open(filename2);
 	if(!preProcessedFile.is_open()){
-		cout << "Nao foi possivel abrir arquivo 3 " << filename1 << endl;
+		cout << "Nao foi possivel abrir arquivo " << filename1 << endl;
 	}
 	if(!temporaryFile2.is_open()){
-		cout << "Nao foi possivel abrir arquivo 4 " << filename2 << endl;
+		cout << "Nao foi possivel abrir arquivo " << filename2 << endl;
 	}
 
 	//Percorre todas as linhas do arquivo e ...
@@ -277,8 +338,8 @@ void preProcessor::expandDirectives(string filename){
 						sintaticError(0);
 					}
 					EQUT.push_back(equt());
-					EQUT[f_equt].rot = lowerCase(structure.rot);
-					EQUT[f_equt].value = structure.number;
+					EQUT[EQUT.size()-1].rot = lowerCase(structure.rot);
+					EQUT[EQUT.size()-1].value = structure.number;
 				}
 			}
 		}
@@ -287,23 +348,7 @@ void preProcessor::expandDirectives(string filename){
 		else if(section == 1){
 			if(!structure.directive.empty()){
 				//Se é IF
-				if(lowerCase(structure.directive) == "if"){
-					//IF com numero
-					if(structure.lineCode == "DN"){
-						if(!stoi(structure.number)){
-							writeNextLine = false;
-						}
-					}
-					//IF com chamada de EQU
-					if(structure.lineCode == "DZ"){
-						i_equt = findInEQUT(lowerCase(structure.notDefined[0]));
-						if(i_equt!=-1){
-							if(!stoi(EQUT[i_equt].value)){
-								writeNextLine = false;
-							}
-						}					
-					}
-				}
+				writeNextLine = ifs(structure);
 				//Se é declaração de MACRO
 				if(lowerCase(structure.directive) == "macro"){
 					if(structure.lineCode.compare(0,2,"RD")!=0){
@@ -313,13 +358,12 @@ void preProcessor::expandDirectives(string filename){
 					fillMDT();
 				}
 			}
+			//Se não é uma chamada de função, pode ser uma chamada de macro
 			else if(structure.funct.empty() && structure.notDefined.size()){
-				cout << "Possivel chamada de MACRO" << endl;
 				for(int i=0; i<structure.notDefined.size(); ++i){
-					int isMacro = findMNT(structure.notDefined[i]);
-					cout << "Is macro = " << isMacro << endl;
-					if(isMacro!=-1){
-						expandMacro(isMacro, structure);
+					int mnt_pos = findMNT(structure.notDefined[i]);
+					if(mnt_pos!=-1){
+						expandMacro(mnt_pos, structure,false);
 					}
 				}
 			}
@@ -340,22 +384,12 @@ void preProcessor::expandDirectives(string filename){
 		}
 	}
 
-	cout <<endl << "MNT" <<endl;
-	for(int i=0; i<MNT.size(); ++i){
-		cout << MNT[i].rot<< endl;
-	}
-
-	cout <<endl << "MDT" <<endl;
-	for(int i=0; i<MDT.size(); ++i){
-		cout << MDT[i]<< endl;
-	}
-
 	temporaryFile2.close();
 	preProcessedFile.close();
+	remove(filename1.c_str());
 }
 
 void preProcessor::run(string filename){
 	textTreatment(filename);
 	expandDirectives(filename);
-
 }
