@@ -7,6 +7,10 @@
 
 using namespace std;
 
+
+#ifndef __PRE_PROCESSOR_CLASSDEF__
+#define __PRE_PROCESSOR_CLASSDEF__
+
 typedef struct {
 	string rot;
 	int argNumber;
@@ -59,3 +63,4 @@ public:
 	void run(string filename);
 };
 
+#endif

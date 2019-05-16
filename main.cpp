@@ -7,4 +7,7 @@ int main(){
 	preProcessor preProcessor;
 
 	preProcessor.run(filename);
+
+	Montador Montador;
+	Montador.run(filename);
 }

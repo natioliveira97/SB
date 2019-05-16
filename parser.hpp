@@ -1,10 +1,12 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-
 #include "scanner.hpp"
 
 using namespace std;
+
+#ifndef __PARSER_CLASSDEF__
+#define __PARSER_CLASSDEF__
 
 typedef struct{
 	string rot;
@@ -40,3 +42,5 @@ public:
 
 	lineStruct lineStructure(string line);
 };
+
+#endif
