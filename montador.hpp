@@ -28,7 +28,7 @@ private:
 	int functionArgs(string funct);
 	//int funcitonCode(string funct);
 	void secondPass(string filename);
-	void textSintaxe(string line, lineNumber);
+	void textSintaxe(string line, int lineNumber);
 
 
 public:

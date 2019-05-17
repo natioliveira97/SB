@@ -155,7 +155,7 @@ int Montador::functionArgs(string funct){
 // 	return -1;
 // }
 
-void Montador::textSintaxe(string line int lineNumber){
+void Montador::textSintaxe(string line, int lineNumber){
 	lineStruct structure = lineStructure(line);
 
 	regex comp1("(.*)(F)(.*)");
