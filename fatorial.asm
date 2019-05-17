@@ -7,7 +7,7 @@ LOAD &A
 END
 
 CHAMA_N: MACRO &E &F
-MULT &F
+MUL &F
 DIV &E
 if 0
 MUL_N T V

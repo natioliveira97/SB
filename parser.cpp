@@ -8,7 +8,7 @@ using namespace std;
 				false Se não é função.
 */
 bool parser::isFunction(string token){
-	vector<string> functions = {"add","sub","mul","div","jmp","jmpp","jmpz","copy","load","store","input","output","stop"};
+	vector<string> functions = {"add","sub","mult","div","jmp","jmpn","jmpp","jmpz","copy","load","store","input","output","stop"};
 	token = lowerCase(token);
 	for(int i=0; i<functions.size(); ++i){
 		if (token == functions[i]){
@@ -63,7 +63,7 @@ bool parser::isPlusSign(string token){
 	return false;
 }
 
-/** \brief Verifica se o token é um número.
+/**	\brief Verifica se o token é um número.
 	\param token 
 	\return 	true Se é um número.
 				false Se não é um número.
@@ -78,7 +78,7 @@ bool parser::isNumber(string token){
 	return true;
 }
 
-/** \brief Separa a linha em rotulo, função ou diretiva e argumentos
+/**	\brief Separa a linha em rotulo, função ou diretiva e argumentos
 	\param line Linha do arquivo texto.
 	\return Retorna struct da estrutura da linha
 */

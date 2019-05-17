@@ -7,7 +7,7 @@ CC = g++
 CC_FLAGS = -c \
            --std=c++11
 
-OBJ = main.o pre_processor.o parser.o scanner.o
+OBJ = main.o montador.o pre_processor.o parser.o scanner.o
 
 
  
@@ -27,8 +27,11 @@ parser.o: parser.cpp parser.hpp scanner.o
 pre_processor.o: pre_processor.cpp pre_processor.hpp parser.o scanner.o
 	$(CC) $(CC_FLAGS) pre_processor.cpp parser.cpp scanner.cpp
 
-main.o: main.cpp pre_processor.o parser.o scanner.o
-	$(CC) $(CC_FLAGS) main.cpp pre_processor.cpp parser.cpp scanner.cpp
+montador.o: montador.cpp montador.hpp parser.o scanner.o
+	$(CC) $(CC_FLAGS) montador.cpp parser.cpp scanner.cpp
+
+main.o: main.cpp montador.o pre_processor.o parser.o scanner.o
+	$(CC) $(CC_FLAGS) main.cpp montador.cpp pre_processor.cpp parser.cpp scanner.cpp
 
 
 	
