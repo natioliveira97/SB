@@ -26,9 +26,12 @@ private:
 	void printTable();
 	void error(string errorType, int lineNumber, string description);
 	int functionArgs(string funct);
-	//int funcitonCode(string funct);
+	int functionCode(string funct);
 	void secondPass(string filename);
 	void textSintaxe(string line, int lineNumber);
+
+	ifstream textFile;
+	ofstream objFile;
 
 
 public:

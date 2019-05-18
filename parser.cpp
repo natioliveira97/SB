@@ -86,6 +86,7 @@ lineStruct parser::lineStructure(string line){
 	lineStruct structure;
 	string token;
 	int n = line.length();
+	line = lowerCase(line);
 
 	for(int i=0; i<n; ++i){
 		while(i<n &&line.at(i)!=' '){
