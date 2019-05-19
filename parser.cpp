@@ -136,7 +136,3 @@ lineStruct parser::lineStructure(string line){
 	}
 	return structure; 
 }
-
-void parser::sintaticError(int errorCode){
-	cout << "Erro" << endl;
-}

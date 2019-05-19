@@ -96,10 +96,10 @@ void preProcessor::textTreatment(string filename){
 	string newLine;
 
 	if(!textFile.is_open()){
-		cout << "Nao foi possivel abrir arquivo 1 " << filename1 << endl;
+		cout << "Nao foi possivel abrir arquivo " << filename1 << endl;
 	}
 	if(!temporaryFile1.is_open()){
-		cout << "Nao foi possivel abrir arquivo 2 " << filename2 << endl;
+		cout << "Nao foi possivel abrir arquivo " << filename2 << endl;
 	}
 
 	while(getline(textFile,line)){
@@ -140,7 +140,7 @@ int preProcessor::findInEQUT(string token){
 void preProcessor::fillMNT(lineStruct structure){
 	//Não permite macros com mais de 3 argumentos
 	if(structure.macroArg.size() > 3){
-		sintaticError(0);
+		
 	}
 	else {
 		string rot = structure.rot;
@@ -254,7 +254,7 @@ void preProcessor::expandMacro(int mnt_pos, lineStruct structure, bool inMDT){
 	//Erro se o número de argumentos passados não é igual ao número de argumento da macro.
 	if(isThereArg){
 		if(structure.notDefined.size()!=isThereArg+1){
-			sintaticError(0);
+			error("Número de argumentos passados para a macro incorreto.");
 		}
 	}
 
@@ -290,6 +290,7 @@ void preProcessor::expandDirectives(string filename){
 	string line;
 	int i_equt = 0; //Indice vetor de EQU
 	bool writeNextLine = true;
+	bool writeLine = true;
 	int section = 0; //Define em qual sessao o codigo se encontra (0-nao esta na text nem na data, 1-text, 2-data)
 
 	temporaryFile2.open(filename1);
@@ -307,6 +308,7 @@ void preProcessor::expandDirectives(string filename){
 	//Na sessão data é possível ter chamada de EQUs
 
 	while(getline(temporaryFile2,line)){
+		writeLine = true;
 		//Pula a linha caso a linha anterior aponte um if falso.
 		if(writeNextLine == false){
 			writeNextLine = true;
@@ -314,10 +316,7 @@ void preProcessor::expandDirectives(string filename){
 		}
 
 		lineStruct structure;
-		cout << line << endl;
 		structure = lineStructure(line);
-
-		cout << structure.lineCode << endl;
 		if(lowerCase(line)=="section text"){
 			section = 1;
 			preProcessedFile << line << "\n";
@@ -335,7 +334,7 @@ void preProcessor::expandDirectives(string filename){
 				//Se é declaração de EQU
 				if(lowerCase(structure.directive) == "equ"){
 					if(structure.lineCode != "RDN"){
-						sintaticError(0);
+						error("Sintaxe de EQU incorreta");
 					}
 					EQUT.push_back(equt());
 					EQUT[EQUT.size()-1].rot = lowerCase(structure.rot);
@@ -352,11 +351,12 @@ void preProcessor::expandDirectives(string filename){
 				//Se é declaração de MACRO
 				if(lowerCase(structure.directive) == "macro"){
 					if(structure.lineCode.compare(0,2,"RD")!=0){
-						sintaticError(0);
+						error("Sintaxe de MACRO incorreta");
 					}
 					fillMNT(structure);
 					fillMDT();
 				}
+				writeLine = false;
 			}
 			//Se não é uma chamada de função, pode ser uma chamada de macro
 			else if(structure.funct.empty() && structure.notDefined.size()){
@@ -364,10 +364,12 @@ void preProcessor::expandDirectives(string filename){
 					int mnt_pos = findMNT(structure.notDefined[i]);
 					if(mnt_pos!=-1){
 						expandMacro(mnt_pos, structure,false);
+						writeLine = false;
 					}
 				}
 			}
-			else{
+
+			if(writeLine){
 				preProcessedFile << line <<'\n';
 			}
 		}
@@ -387,6 +389,11 @@ void preProcessor::expandDirectives(string filename){
 	temporaryFile2.close();
 	preProcessedFile.close();
 	remove(filename1.c_str());
+}
+
+void preProcessor::error(string description){
+	erro = true;
+	cout << description << endl;
 }
 
 void preProcessor::run(string filename){

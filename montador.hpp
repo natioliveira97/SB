@@ -30,6 +30,8 @@ private:
 	void secondPass(string filename);
 	void textSintaxe(string line, int lineNumber);
 
+	bool erro = false;
+
 	ifstream textFile;
 	ofstream objFile;
 

@@ -12,7 +12,7 @@ OBJ = main.o montador.o pre_processor.o parser.o scanner.o
 
  
 all: $(PROJ_NAME)
-#	rm -rf $(OBJ)
+	rm -rf $(OBJ)
 
  
 $(PROJ_NAME): $(OBJ)	

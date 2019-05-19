@@ -38,8 +38,6 @@ public:
 
 	int classifyToken(string token);
 
-	void sintaticError(int errorCode);
-
 	lineStruct lineStructure(string line);
 };
 

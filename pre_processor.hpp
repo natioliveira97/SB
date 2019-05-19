@@ -48,6 +48,10 @@ private:
 
 	void expandMacro(int mnt_pos, lineStruct structure, bool inMDT);
 
+	void error(string description);
+
+	bool erro = false;
+
 
 public:
 

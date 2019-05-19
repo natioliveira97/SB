@@ -59,7 +59,7 @@ void Montador::fillTable(string filename){
 	string line;
 
 	if(!textFile.is_open()){
-		cout << "Nao foi possivel abrir arquivo" << endl;
+		cout << "Nao foi possivel abrir arquivo " << filename1 << endl;
 	}
 
 	while(getline(textFile,line)){
@@ -137,8 +137,8 @@ void Montador::fillTable(string filename){
 }
 
 int Montador::functionArgs(string funct){
-	vector<string> functions = {"add","sub","mul","div","jmp","jmpp","jmpz","copy","load","store","input","output","stop"};
-	vector<int> arg = {1,1,1,1,1,1,1,2,1,1,1,1,0};
+	vector<string> functions = {"add","sub","mult","div","jmp","jmpn","jmpp","jmpz","copy","load","store","input","output","stop"};
+	vector<int> arg = {1,1,1,1,1,1,1,1,2,1,1,1,1,0};
 
 	for(int i = 0; i < functions.size(); ++i){
 		if(funct == functions[i]){
@@ -149,7 +149,7 @@ int Montador::functionArgs(string funct){
 }
 
 int Montador::functionCode(string funct){
-	vector<string> functions = {"add","sub","mul","div","jmp","jmpn","jmpp","jmpz","copy","load","store","input","output","stop"};
+	vector<string> functions = {"add","sub","mult","div","jmp","jmpn","jmpp","jmpz","copy","load","store","input","output","stop"};
 	for(int i = 0; i < functions.size(); ++i){
 		if(funct == functions[i]){
 			return i+1;
@@ -199,20 +199,34 @@ void Montador::textSintaxe(string line, int lineNumber){
 		return;
 	}
 
-	if(functionArgs(structure.funct) == 1){
+	if(functionArgs(structure.funct) == 0){
+		//Verifica sintaxe da linha.
+		if(structure.lineCode != "F" && structure.lineCode != "RF"){
+			error("sin", lineNumber, "Sintaxe inválida");
+		}
+	}
+	else if(functionArgs(structure.funct) == 1){
+		//Verifica sintaxe da linha.
+		if(structure.lineCode != "FZ" && structure.lineCode != "RFZ" && structure.lineCode != "FZSN" && structure.lineCode != "RFZSN"){
+			error("sin", lineNumber, "Sintaxe inválida");
+		}
+
 		tabsIndex = searchAddress(structure.notDefined[0],-1);
 		if(tabsIndex == -1){
-			error("sem", lineNumber, "Rótulo não declarado");
+			if(!isValido(structure.notDefined[0])){
+				error("lex", lineNumber, "Token inválido.");
+			}
+			error("sem", lineNumber, "Rótulo não declarado.");
 			return;
 		}
 
-		regex comp3("(.*)(Z+N)(.*)");
+		regex comp3("(.*)(ZSN)(.*)");
 		if(regex_match(structure.lineCode, comp3)){
 			if(TABS[tabsIndex].type!=2){
 				error("sem", lineNumber, "Operação em rótulo que não é SPACE.");
 			}
-			if(stoi(structure.number) < TABS[tabsIndex].const_value){
-				error("sem", lineNumber, "Endereço ultrapassa limite do vetor");
+			if(stoi(structure.number) >= TABS[tabsIndex].const_value){
+				error("sem", lineNumber, "Endereço ultrapassa limite do vetor.");
 			}
 			realAddress = TABS[tabsIndex].address + stoi(structure.number);
 		}
@@ -239,7 +253,6 @@ void Montador::textSintaxe(string line, int lineNumber){
 			}
 		}
 		else if(structure.funct == "store"){
-			cout << TABS[tabsIndex].type << endl;
 			if(TABS[tabsIndex].type != 2){
 				error("sem", lineNumber, "STORE em argumento não variável");
 			}
@@ -249,11 +262,61 @@ void Montador::textSintaxe(string line, int lineNumber){
 				error("sem", lineNumber, "INPUT em argumento não variável");
 			}
 		}
-
 		objFile << realAddress << " ";
 	}
 
-	//if(functionArgs(structure.funct) == 2)
+	else if(functionArgs(structure.funct) == 2){
+		//Verifica sintaxe da linha, apenas o segundo argumento do copy poderá aceitar acesso vetorial
+		if(structure.lineCode != "FZZ" && structure.lineCode != "RFZZ" && structure.lineCode != "FZZSN" && structure.lineCode != "RFZZSN"){
+			error("sin", lineNumber, "Sintaxe inválida");
+		}
+
+		//Primeiro argumento
+		if(structure.notDefined[0].back()!=','){
+			error("sin", lineNumber, "Função copy sem vírgula separando os argumentos");
+		}
+		else{
+			structure.notDefined[0].pop_back();
+		}
+		tabsIndex = searchAddress(structure.notDefined[0],-1);
+		if(tabsIndex == -1){
+			if(!isValido(structure.notDefined[0])){
+				error("lex", lineNumber, "Token inválido.");
+			}
+			error("sem", lineNumber, "Rótulo não declarado.");
+			return;
+		}
+		if(TABS[tabsIndex].type == 1){
+			error("sem", lineNumber, "Argumento inválido");
+		}
+
+		objFile << TABS[tabsIndex].address << " ";
+
+		//Segundo argumento
+		tabsIndex = searchAddress(structure.notDefined[1],-1);
+		if(tabsIndex == -1){
+			if(!isValido(structure.notDefined[1])){
+				error("lex", lineNumber, "Token inválido.");
+			}
+			error("sem", lineNumber, "Rótulo não declarado.");
+			return;
+		}
+
+		regex comp3("(.*)(ZSN)(.*)");
+		if(regex_match(structure.lineCode, comp3)){
+			if(TABS[tabsIndex].type!=2){
+				error("sem", lineNumber, "Operação em rótulo que não é SPACE.");
+			}
+			if(stoi(structure.number) >= TABS[tabsIndex].const_value){
+				error("sem", lineNumber, "Endereço ultrapassa limite do vetor.");
+			}
+			realAddress = TABS[tabsIndex].address + stoi(structure.number);
+		}
+		else{
+			realAddress = TABS[tabsIndex].address;
+		}
+		objFile << realAddress << " ";
+	}
 
 
 
@@ -283,6 +346,7 @@ void Montador::secondPass(string filename){
 	}
 
 	while(getline(textFile,line)){
+		++lineNumber;
 
 		if(lowerCase(line) == "section text"){
 			section = 1;
@@ -302,16 +366,11 @@ void Montador::secondPass(string filename){
 		else if(section == 2){
 			//dataSintaxe
 		}
-
-		++lineNumber;
 		
 	}
 	textFile.close();
 	objFile.close();
 }
-
-
-
 
 
 /** \brief Imprime na tela a tabela de símbolos com os nomes dos rótulos e seus respectivos endereços.
@@ -326,6 +385,7 @@ void Montador::printTable(){
 
 
 void Montador::error(string errorType, int lineNumber, string description){
+	erro = true;
 	if(errorType == "lex"){
 		cout << "Erro léxico na linha " << lineNumber << ": " << description << endl;
 	}
@@ -335,7 +395,6 @@ void Montador::error(string errorType, int lineNumber, string description){
 	else{
 		cout << "Erro semântico na linha " << lineNumber << ": " << description << endl;
 	}
-
 }
 
 
@@ -343,5 +402,4 @@ void Montador::run(string filename){
 	fillTable(filename);
 	printTable();
 	secondPass(filename);
-
 }
