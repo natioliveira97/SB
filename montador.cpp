@@ -158,10 +158,17 @@ int Montador::functionCode(string funct){
 	return -1;
 }
 
+
 void Montador::textSintaxe(string line, int lineNumber){
 	lineStruct structure = lineStructure(line);
 	int tabsIndex;
 	int realAddress;
+
+	//Verifica se a linha possui diretivas.
+	regex comp("(.*)(D)(.*)");
+	if(regex_match(structure.lineCode, comp)){
+		error("sem", lineNumber, "Diretiva na seção texto.");
+	}
 
 	//Verifica se a linha possui rótulo.
 	regex comp1("(.*)(R)(.*)");
@@ -189,7 +196,7 @@ void Montador::textSintaxe(string line, int lineNumber){
 		objFile << functionCode(structure.funct) << " ";
 	}
 	else{
-		error("sem", lineNumber, "Linha da sessão texto sem função.");
+		error("sem", lineNumber, "Linha da seção texto sem função.");
 		return;
 	}
 
@@ -317,14 +324,83 @@ void Montador::textSintaxe(string line, int lineNumber){
 		}
 		objFile << realAddress << " ";
 	}
-
-
-
-
-
-
-
 }
+
+
+
+
+
+
+void Montador::dataSintaxe(string line, int lineNumber){
+	lineStruct structure = lineStructure(line);
+
+	//Verifica se a linha possui rótulo.
+	regex comp1("(.*)(R)(.*)");
+	bool thereIsRot = regex_match(structure.lineCode, comp1);
+	if(thereIsRot){
+		if(structure.lineCode[0] != 'R'){
+			error("sin", lineNumber, "Rótulo declarado em local indevido.");
+		}
+	}
+	else{
+		error("sem", lineNumber, "Linha da seção dados sem rótulo.");
+	}
+
+	regex comp2("(.*)(D)(.*)(D)(.*)");
+	if(regex_match(structure.lineCode, comp2)){
+		error("sin", lineNumber, "Mais de uma diretiva na mesma linha.");
+	}
+
+	regex comp3("(.*)(N)(.*)(N)(.*)");
+	if(regex_match(structure.lineCode, comp3)){
+		error("sin", lineNumber, "Número de argumentos incorreto.");
+	}
+
+	regex comp4("(.*)(ND)(.*)");
+	regex comp5("(.*)(Z)(.*)");
+	if(regex_match(structure.lineCode, comp4) || regex_match(structure.lineCode, comp5)){
+		error("sin", lineNumber, "Sintaxe inválida");
+	}
+
+	// Verifica se a linha possui diretiva.
+	regex comp6("(.*)(D)(.*)");
+	regex comp7("(.*)(N)(.*)");
+	if(regex_match(structure.lineCode, comp6)){
+
+		if (lowerCase(structure.directive) == "space"){
+			if(regex_match(structure.lineCode, comp7)){
+				if(stoi(structure.number) > 0){
+					for(int i = 0; i < stoi(structure.number); i++){
+						objFile << "0 ";
+					}
+				}
+				else 
+					error("sin", lineNumber, "Argumento inválido.");
+			}
+			else
+				objFile << "0 ";
+		}
+
+		if (lowerCase(structure.directive) == "const"){
+			objFile << structure.number << " ";
+		}
+	}
+	else
+		error("sem", lineNumber, "Linha da seção dados sem diretiva.");
+
+
+	// Verifica se a linha possui função.
+	regex comp8("(.*)(F)(.*)");
+	if(regex_match(structure.lineCode, comp8)){
+		error("sem", lineNumber, "Função na seção dados.");
+	}
+}
+
+
+
+
+
+
 
 void Montador::secondPass(string filename){
 	string filename1 = filename + ".pre";
@@ -364,7 +440,7 @@ void Montador::secondPass(string filename){
 			textSintaxe(line, lineNumber);
 		}
 		else if(section == 2){
-			//dataSintaxe
+			dataSintaxe(line, lineNumber);
 		}
 		
 	}

@@ -29,6 +29,7 @@ private:
 	int functionCode(string funct);
 	void secondPass(string filename);
 	void textSintaxe(string line, int lineNumber);
+	void dataSintaxe(string line, int lineNumber);
 
 	bool erro = false;
 

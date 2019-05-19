@@ -23,7 +23,7 @@ STORE N
 OI: JMP V
 JMPP V
 ADD N + 1
-R: copy N, AUX
+R#: copy N, AUX
 
 
 ;FAT: SUB ONE
@@ -37,4 +37,7 @@ R: copy N, AUX
 SECTION DATA
 AUX: SPACE
 N: SPACE 2
-ONE: CONST 1
+9ONE: CONST 1
+;mult n
+oi: space -1
+ola: const 1
