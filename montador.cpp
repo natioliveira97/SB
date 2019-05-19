@@ -69,13 +69,38 @@ void Montador::fillTable(string filename){
 		lineNumber++;
 
 		// Verifia se a linha possui algum rótulo.
+		// Verifia se a linha possui diretiva.
+		// Verifia se a linha possui parâmetro de diretiva.
 		regex comp("(R)(.*)");
+		regex comp1("(.*)(D)(.*)");
+		regex comp2("(.*)(N)(.*)");
+
 		int thereIsRot = regex_match(structure.lineCode, comp);
 		if(thereIsRot){
 			structure.rot.pop_back();
 			if(isValido(structure.rot)){
 				if(searchAddress(structure.rot,-1) == -1){
 					putTable(lowerCase(structure.rot), address, 1, 1);
+
+					if(regex_match(structure.lineCode, comp1)){
+						if (lowerCase(structure.directive) == "space"){
+							if(thereIsRot){
+								TABS[TABS.size()-1].type = 2;
+							}
+							if(regex_match(structure.lineCode, comp2)){
+								TABS[TABS.size()-1].const_value = stoi(structure.number);
+							}
+							else{
+								TABS[TABS.size()-1].const_value = 1;
+							}
+						}
+						else if(lowerCase(structure.directive) == "const"){
+							if(thereIsRot){
+								TABS[TABS.size()-1].type = 3;
+								TABS[TABS.size()-1].const_value = stoi(structure.number);
+							}
+						}
+					}
 				}
 				else {
 					error("sem", lineNumber, "Rótulo já definido.");
@@ -86,51 +111,45 @@ void Montador::fillTable(string filename){
 		}
 
 
-		// Verifica se a linha possui fução.
-		// Se a função for um "copy", soma-se 3 no contador de endereços.
-		// Se a função for um "stop", soma-se 1 no contador de endereços.
-		// Senão, soma-se 1 no contador de endereços;
-		regex comp1("(.*)(F)(.*)");
-		if(regex_match(structure.lineCode, comp1)){
-			if (lowerCase(structure.funct) == "copy")
-				address += 3;
-			else if (lowerCase(structure.funct) == "stop")
-				address++;
-			else
-				address += 2;
-		}
-
 		// Verifica se a linha possui diretiva.
 		// Se a diretiva for um "space" e possuir argumento, soma-se o valor do argumento no contador de endereços, senão soma-se 1.
 		// Se a diretiva for qualquer outra, soma-se 1 no contador de endereços.
-		regex comp2("(.*)(D)(.*)");
-		regex comp3("(.*)(N)(.*)");
-		if(regex_match(structure.lineCode, comp2)){
+		if(regex_match(structure.lineCode, comp1)){
 			if (lowerCase(structure.directive) == "space"){
-				if(thereIsRot){
-					TABS[TABS.size()-1].type = 2;
-				}
-				else{
+				if(!thereIsRot){
 					error("sin", lineNumber, "Diretiva SPACE sem rótulo");
 				}
-				if(regex_match(structure.lineCode, comp3)){
-					address += stoi(structure.number);
-					TABS[TABS.size()-1].const_value = stoi(structure.number);
+				if(regex_match(structure.lineCode, comp2)){
+					if(stoi(structure.number) > 0)
+						address += stoi(structure.number);
+					else
+						address++;
 				}
 				else{
 					address++;
 				}
 			}
 			else if(lowerCase(structure.directive) == "const"){
-				if(thereIsRot){
-					TABS[TABS.size()-1].type = 3;
-					TABS[TABS.size()-1].const_value = stoi(structure.number);
-				}
-				else{
+				if(!thereIsRot){
 					error("sin", lineNumber, "Diretiva CONST sem rótulo");
 				}
 				address++;
 			}
+		}
+
+
+		// Verifica se a linha possui função.
+		// Se a função for um "copy", soma-se 3 no contador de endereços.
+		// Se a função for um "stop", soma-se 1 no contador de endereços.
+		// Senão, soma-se 1 no contador de endereços;
+		regex comp3("(.*)(F)(.*)");
+		if(regex_match(structure.lineCode, comp3)){
+			if (lowerCase(structure.funct) == "copy")
+				address += 3;
+			else if (lowerCase(structure.funct) == "stop")
+				address++;
+			else
+				address += 2;
 		}
 	}
 	textFile.close();
@@ -452,10 +471,10 @@ void Montador::secondPass(string filename){
 /** \brief Imprime na tela a tabela de símbolos com os nomes dos rótulos e seus respectivos endereços.
 */
 void Montador::printTable(){
-	cout << "Nome \tEndereço \tTipo \tValor" << endl;
+	cout << "Nome \tEndereço  \tTipo \tValor" << endl;
 
 	for(int i = 0; i < TABS.size(); ++i){
-		cout << TABS[i].name << "\t" << TABS[i].address << "\t" << TABS[i].type << "\t" << TABS[i].const_value <<  endl;
+		cout << TABS[i].name << "\t" << TABS[i].address << "\t\t" << TABS[i].type << "\t" << TABS[i].const_value <<  endl;
 	}
 }
 

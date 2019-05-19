@@ -37,7 +37,7 @@ R#: copy N, AUX
 SECTION DATA
 AUX: SPACE
 N: SPACE 2
-9ONE: CONST 1
-;mult n
-oi: space -1
+ONE: CONST 1
+mult n
+ois: space -1
 ola: const 1
