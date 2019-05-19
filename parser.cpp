@@ -70,12 +70,17 @@ bool parser::isPlusSign(string token){
 */
 bool parser::isNumber(string token){
 	int n = token.length();
-	for(int i=0; i<n; ++i){
-		if ((token.at(i) < '0' || token.at(i) > '9')){
-			return false;
-		}
-	}
-	return true;
+
+	regex hex("0x[0-9a-fA-F]{0,30}");
+	regex num("[0-9-]{0,30}");
+
+	if(regex_match(token, hex))
+		return true;
+
+	if(regex_match(token, num))
+		return true;
+
+	return false;
 }
 
 /**	\brief Separa a linha em rotulo, função ou diretiva e argumentos
@@ -125,6 +130,11 @@ lineStruct parser::lineStructure(string line){
 		}
 		// Se é número
 		else if(isNumber(token)){
+			regex hex("0x[0-9a-fA-F]{0,30}");
+			if(regex_match(token, hex)){
+				int n = stoi(token, nullptr, 16);
+				token =  to_string(n);
+			}
 			structure.number = token;
 			structure.lineCode = structure.lineCode + "N";
 		}

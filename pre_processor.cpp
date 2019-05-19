@@ -1,7 +1,7 @@
 /** 
 	\file pre_processor.cpp
 	\author Natalia Oliveira Borges - 16/0015863
-	\author Lívia Gomes Costa Fonseca -
+	\author Lívia Gomes Costa Fonseca - 16/0034078
 	\name Pré Processador
 */
 
