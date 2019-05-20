@@ -380,16 +380,20 @@ void preProcessor::expandDirectives(string filename){
 
 		//Na sessão data só é necessário expandir EQUs
 		else if(section == 2){
-			if(structure.lineCode == "RDZ"){
-				i_equt = findInEQUT(lowerCase(structure.notDefined[0]));
-				preProcessedFile << structure.rot << " " << structure.directive << " " << EQUT[i_equt].value << "\n";
-			}
-			else if(structure.lineCode == "R"){
+			if(structure.lineCode == "R"){
 				preProcessedFile << line << " ";
 			}
 			else{
+				for(int i=0; i<structure.notDefined.size(); ++i){
+					i_equt = findInEQUT(lowerCase(structure.notDefined[i]));
+					int line_index = line.find(structure.notDefined[i]);
+					if(line_index != string::npos && i_equt != -1){
+						line.replace(line_index, structure.notDefined[i].size(), EQUT[i_equt].value);
+					}
+				}
 				preProcessedFile << line << "\n";
 			}
+
 		}
 	}
 
