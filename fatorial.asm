@@ -1,43 +1,41 @@
-zero: equ 0
+z: equ 1
+
 SECTION TEXT
 
 MUL_N: MACRO &M &A
+MULT &A
 Store &M
-LOAD &A
 END
 
-CHAMA_N: MACRO &E &F
-MUL &F
-DIV &E
-if 0
-MUL_N T V
-MUL_N W Z
+chama_MUL_N: MACRO
+LOAD UM
+MUL_N n MIL
+LOAD UM 
+MUL_N n + 2 MENOS_UM
 END
 
+if z
+CHAMA_Mul_n
+oi:
+ola:
+const 2
+output N
+output N + 1
+stop
+
+SECTIon DATa
+UM: const 0x1
+MIL: const 1000
+menos_um: const -1
+zero: const 0x0
+n: space 2
 
 
-V: INPUT N
-LOAD N
-INPut N
-STORE N
-OI: JMP V
-JMPP V
-ADD N + 1
-R#: copy N, AUX
 
 
-;FAT: SUB ONE
-;JMPZ FIM
-;STORE AUX
-;MUL_N N k
-;LOAD AUX
-;JMP FAT
-;FIM: OUTPUT N
-;STOP
-SECTION DATA
-AUX: SPACE
-N: SPACE 2
-ONE: CONST 1
-mult n
-ois: space -1
-ola: const 1
+
+
+
+
+
+

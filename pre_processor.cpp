@@ -162,7 +162,7 @@ void preProcessor::fillMNT(lineStruct structure){
 */
 int preProcessor::findMNT(string token){
 	for(int i=0; i<MNT.size(); ++i){
-		if(token == MNT[i].rot){
+		if(token == lowerCase(MNT[i].rot)){
 			return i;
 		}
 	}
@@ -260,10 +260,11 @@ void preProcessor::expandMacro(int mnt_pos, lineStruct structure, bool inMDT){
 
 	while(lowerCase(MDT[i]) != "end"){
 		string line = MDT[i];
+		string line2 = lowerCase(line);
 		lineStruct structure2 = lineStructure(line);
 		for(int j=0; j<isThereArg; ++j){
-			int found = line.find(MNT[mnt_pos].arg[j]);
-			if(found!=string::npos){
+			int found = line2.find(MNT[mnt_pos].arg[j]);
+			if(found != string::npos){
 				// Substitui parâmetros por rótulos
 				line.replace(found, MNT[mnt_pos].arg[j].size(), structure.notDefined[j+1]);
 			}
@@ -347,7 +348,10 @@ void preProcessor::expandDirectives(string filename){
 		else if(section == 1){
 			if(!structure.directive.empty()){
 				//Se é IF
-				writeNextLine = ifs(structure);
+				if(lowerCase(structure.directive) == "if"){
+					writeNextLine = ifs(structure);
+					writeLine = false;
+				}
 				//Se é declaração de MACRO
 				if(lowerCase(structure.directive) == "macro"){
 					if(structure.lineCode.compare(0,2,"RD")!=0){
@@ -355,8 +359,8 @@ void preProcessor::expandDirectives(string filename){
 					}
 					fillMNT(structure);
 					fillMDT();
+					writeLine = false;
 				}
-				writeLine = false;
 			}
 			//Se não é uma chamada de função, pode ser uma chamada de macro
 			else if(structure.funct.empty() && structure.notDefined.size()){

@@ -68,18 +68,18 @@ void Montador::fillTable(string filename){
 		lineStruct structure = lineStructure(line);
 		lineNumber++;
 
-		// Verifia se a linha possui algum rótulo.
-		// Verifia se a linha possui diretiva.
-		// Verifia se a linha possui parâmetro de diretiva.
+		// Verifica se a linha possui algum rótulo.
 		regex comp("(R)(.*)");
+		// Verifica se a linha possui diretiva.
 		regex comp1("(.*)(D)(.*)");
+		// Verifica se a linha possui parâmetro de diretiva.
 		regex comp2("(.*)(N)(.*)");
 
 		int thereIsRot = regex_match(structure.lineCode, comp);
 		if(thereIsRot){
 			structure.rot.pop_back();
 			if(isValido(structure.rot)){
-				if(searchAddress(structure.rot,-1) == -1){
+				if(searchAddress(structure.rot, address) == -1){
 					putTable(lowerCase(structure.rot), address, 1, 1);
 
 					if(regex_match(structure.lineCode, comp1)){
@@ -95,14 +95,17 @@ void Montador::fillTable(string filename){
 							}
 						}
 						else if(lowerCase(structure.directive) == "const"){
-							if(thereIsRot){
-								TABS[TABS.size()-1].type = 3;
+							TABS[TABS.size()-1].type = 3;
+							if(regex_match(structure.lineCode, comp2)){
 								TABS[TABS.size()-1].const_value = stoi(structure.number);
 							}
 						}
 					}
 				}
-				else {
+				else if(searchAddress(structure.rot, address) == -2){
+					error("sem", lineNumber, "Dois rótulos na mesma linha.");
+				}
+				else{
 					error("sem", lineNumber, "Rótulo já definido.");
 				}
 			}
@@ -132,6 +135,9 @@ void Montador::fillTable(string filename){
 			else if(lowerCase(structure.directive) == "const"){
 				if(!thereIsRot){
 					error("sin", lineNumber, "Diretiva CONST sem rótulo");
+				}
+				if(!regex_match(structure.lineCode, comp2)){
+					error("sin", lineNumber, "Diretiva CONST sem número");
 				}
 				address++;
 			}
@@ -187,6 +193,7 @@ void Montador::textSintaxe(string line, int lineNumber){
 	regex comp("(.*)(D)(.*)");
 	if(regex_match(structure.lineCode, comp)){
 		error("sem", lineNumber, "Diretiva na seção texto.");
+		return;
 	}
 
 	//Verifica se a linha possui rótulo.
@@ -195,6 +202,9 @@ void Montador::textSintaxe(string line, int lineNumber){
 	if(thereIsRot){
 		if(structure.lineCode[0] != 'R'){
 			error("sin", lineNumber, "Rótulo declarado em local indevido.");
+		}
+		if(structure.lineCode == "R"){
+			return;
 		}
 	}
 
@@ -346,10 +356,6 @@ void Montador::textSintaxe(string line, int lineNumber){
 }
 
 
-
-
-
-
 void Montador::dataSintaxe(string line, int lineNumber){
 	lineStruct structure = lineStructure(line);
 
@@ -415,12 +421,6 @@ void Montador::dataSintaxe(string line, int lineNumber){
 	}
 }
 
-
-
-
-
-
-
 void Montador::secondPass(string filename){
 	string filename1 = filename + ".pre";
 	string filename2 = filename + ".obj";
@@ -443,16 +443,23 @@ void Montador::secondPass(string filename){
 	while(getline(textFile,line)){
 		++lineNumber;
 
-		if(lowerCase(line) == "section text"){
-			section = 1;
-			continue;
-		}
-		if(lowerCase(line) == "section data"){
-			if(section == 0){
-				error("sin", lineNumber, "Sessão de dados declarada sem prévia declaração de sessão texto");
+		string line2 = lowerCase(line);
+		if(line2.find("section") != string::npos){
+			if(lowerCase(line) == "section text"){
+				section = 1;
+				continue;
 			}
-			section = 2;
-			continue;
+			else if(lowerCase(line) == "section data"){
+				if(section == 0){
+					error("sin", lineNumber, "Seção de dados declarada sem prévia declaração de seção texto.");
+				}
+				section = 2;
+				continue;
+			}
+			else{
+				section = 3;
+				error("sin", lineNumber, "Seção inválida.");
+			}
 		}
 
 		if(section == 1){
@@ -495,6 +502,5 @@ void Montador::error(string errorType, int lineNumber, string description){
 
 void Montador::run(string filename){
 	fillTable(filename);
-	printTable();
 	secondPass(filename);
 }
