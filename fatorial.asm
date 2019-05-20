@@ -17,8 +17,6 @@ END
 if z
 CHAMA_Mul_n
 oi:
-ola:
-const 2
 output N
 output N + 1
 stop

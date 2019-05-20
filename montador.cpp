@@ -161,6 +161,11 @@ void Montador::fillTable(string filename){
 	textFile.close();
 }
 
+/** \brief Encontra quantos argumentos a função requer.
+	\param funct Função da qual se deseja saber o número de arguentos.
+	\return arg[i] Quantidade de argumetnos da função.
+	\return -1 A função não foi encontrada.
+*/
 int Montador::functionArgs(string funct){
 	vector<string> functions = {"add","sub","mult","div","jmp","jmpn","jmpp","jmpz","copy","load","store","input","output","stop"};
 	vector<int> arg = {1,1,1,1,1,1,1,1,2,1,1,1,1,0};
@@ -173,6 +178,11 @@ int Montador::functionArgs(string funct){
 	return -1;
 }
 
+/** \brief Encontra o opcode de uma função.
+	\param funct Função cujo opcode será determinado.
+	\return i+1 Opcode da função.
+	\return -1 A função não foi encontrada.
+*/
 int Montador::functionCode(string funct){
 	vector<string> functions = {"add","sub","mult","div","jmp","jmpn","jmpp","jmpz","copy","load","store","input","output","stop"};
 	for(int i = 0; i < functions.size(); ++i){
@@ -183,7 +193,10 @@ int Montador::functionCode(string funct){
 	return -1;
 }
 
-
+/** \brief Verifica erros léxicos, sintáticos e semânticos de uma linha da seção texto e escreve no arquivo objeto o código traduzido.
+	\param line Conteúdo da linha.
+	\param lineNumber Número da linha.
+*/
 void Montador::textSintaxe(string line, int lineNumber){
 	lineStruct structure = lineStructure(line);
 	int tabsIndex;
@@ -355,6 +368,10 @@ void Montador::textSintaxe(string line, int lineNumber){
 	}
 }
 
+/** \brief Verifica erros léxicos, sintáticos e semânticos de uma linha da seção dados e escreve no arquivo objeto o código traduzido.
+	\param line Conteúdo da linha.
+	\param lineNumber Número da linha.
+*/
 
 void Montador::dataSintaxe(string line, int lineNumber){
 	lineStruct structure = lineStructure(line);
@@ -371,23 +388,26 @@ void Montador::dataSintaxe(string line, int lineNumber){
 		error("sem", lineNumber, "Linha da seção dados sem rótulo.");
 	}
 
+	//Verifica se a linha possui mais de uma diretiva.
 	regex comp2("(.*)(D)(.*)(D)(.*)");
 	if(regex_match(structure.lineCode, comp2)){
 		error("sin", lineNumber, "Mais de uma diretiva na mesma linha.");
 	}
 
+	//Verifica se a linha possui mais de um argumento de diretiva.
 	regex comp3("(.*)(N)(.*)(N)(.*)");
 	if(regex_match(structure.lineCode, comp3)){
 		error("sin", lineNumber, "Número de argumentos incorreto.");
 	}
 
+	//Verifica a sintaxe da linha considerando a ordem dos tokens e se os argumetnos são do tipo certo.
 	regex comp4("(.*)(ND)(.*)");
 	regex comp5("(.*)(Z)(.*)");
 	if(regex_match(structure.lineCode, comp4) || regex_match(structure.lineCode, comp5)){
 		error("sin", lineNumber, "Sintaxe inválida");
 	}
 
-	// Verifica se a linha possui diretiva.
+	// Verifica se a linha possui diretiva e número como argumento.
 	regex comp6("(.*)(D)(.*)");
 	regex comp7("(.*)(N)(.*)");
 	if(regex_match(structure.lineCode, comp6)){
@@ -421,6 +441,12 @@ void Montador::dataSintaxe(string line, int lineNumber){
 	}
 }
 
+
+
+/** \brief Segunda passagem do montador.
+	\details Passagem na qual verifica-se erros léxicos sintáticos e semânticos e traduz o código, colocando-o no arquivos objeto.
+	\param filename Nome do arquivo pre processado.
+*/
 void Montador::secondPass(string filename){
 	string filename1 = filename + ".pre";
 	string filename2 = filename + ".obj";
@@ -428,6 +454,7 @@ void Montador::secondPass(string filename){
 	int section = 0;
 	int address = 0;
 	int thereIsRot;
+	regex comp("(.*)(section)(.*)");
 
 	textFile.open(filename1);
 	objFile.open(filename2);
@@ -486,6 +513,11 @@ void Montador::printTable(){
 }
 
 
+/** \brief Imprime na tela os tipo de erro e a linha em que se encontra e atribui true à variável erro indicando que o arquivo apresentou erro de compilação.
+	\param erroType Tipo de erro, que pode ser léxico, sintático ou semântico.
+	\param lineNumber Número da linha em que ocorreu o erro.
+	\param description Descrição adicional do erro ocorrido.
+*/
 void Montador::error(string errorType, int lineNumber, string description){
 	erro = true;
 	if(errorType == "lex"){
