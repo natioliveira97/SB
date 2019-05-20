@@ -17,12 +17,14 @@ END
 if z
 CHAMA_Mul_n
 oi:
+
 output N
 output N + 1
 stop
 
 SECTIon DATa
-UM: const 0x1
+UM:
+const 0x1
 copy n d
 MIL: const 1000
 menos_um: const -1

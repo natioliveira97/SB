@@ -384,6 +384,9 @@ void preProcessor::expandDirectives(string filename){
 				i_equt = findInEQUT(lowerCase(structure.notDefined[0]));
 				preProcessedFile << structure.rot << " " << structure.directive << " " << EQUT[i_equt].value << "\n";
 			}
+			else if(structure.lineCode == "R"){
+				preProcessedFile << line << " ";
+			}
 			else{
 				preProcessedFile << line << "\n";
 			}
