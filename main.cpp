@@ -5,7 +5,6 @@
 #include "montador.hpp"
 
 int main(int argc, char **argv){
-	cout << argc << endl;
 	if(argc != 2){
 		cout << "Passe o nome do arquivo .asm como argumento" << endl;
 		return 0;

@@ -29,6 +29,17 @@ O trabalho foi dividido em vários arquivos, são eles:
 
 Para auxiliar a compilação também foi feito um Makefile.
 
+## Bibliotecas utilizadas:
+
+- iostream
+- fstream
+- regex
+- cstdlib
+- cstdio
+
+Todas elas são bibliotecas padrão do C++11.
+
+
 ## Como compilar:
 
 Para compilar esse trabalho faça:
@@ -44,3 +55,9 @@ Para executar esse trabalho faça:
 ```bash
 ./tradutor myprogram.asm
 ```
+
+## Saída do programa
+
+Esse programa recebe um arquivo myprogram.asm e retorna dois arquivos myprogram.pre, arquivo pré processado, e myprogram.obj, arquivo objeto.
+
+Se houver erro de montagem, o arquivo objeto não é criado.

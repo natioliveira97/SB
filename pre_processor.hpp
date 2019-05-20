@@ -2,7 +2,6 @@
 #include <cstdlib>
 #include <cstdio>
 #include <fstream>
-#include <vector>
 #include "parser.hpp"
 
 using namespace std;

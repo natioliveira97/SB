@@ -64,8 +64,6 @@ void Montador::fillTable(string filename){
 	}
 
 	while(getline(textFile,line)){
-			
-		cout << address << " " << line << endl;
 		lineStruct structure = lineStructure(line);
 		lineNumber++;
 
@@ -435,8 +433,6 @@ void Montador::dataSintaxe(string line, int lineNumber){
 		error("sem", lineNumber, "Linha da seção dados sem diretiva.");
 }
 
-
-
 /** \brief Segunda passagem do montador.
 	\details Passagem na qual verifica-se erros léxicos sintáticos e semânticos e traduz o código, colocando-o no arquivos objeto.
 	\param filename Nome do arquivo pre processado.
@@ -495,15 +491,6 @@ void Montador::secondPass(string filename){
 	objFile.close();
 }
 
-/** \brief Imprime na tela a tabela de símbolos com os nomes dos rótulos e seus respectivos endereços.
-*/
-void Montador::printTable(){
-	cout << "Nome \tEndereço  \tTipo \tValor" << endl;
-
-	for(int i = 0; i < TABS.size(); ++i){
-		cout << TABS[i].name << "\t" << TABS[i].address << "\t\t" << TABS[i].type << "\t" << TABS[i].const_value <<  endl;
-	}
-}
 
 /** \brief Imprime na tela os tipo de erro e a linha em que se encontra e atribui true à variável erro indicando que o arquivo apresentou erro de compilação.
 	\param erroType Tipo de erro, que pode ser léxico, sintático ou semântico.
