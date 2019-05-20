@@ -120,9 +120,6 @@ void Montador::fillTable(string filename){
 		// Se a diretiva for qualquer outra, soma-se 1 no contador de endereços.
 		if(regex_match(structure.lineCode, comp1)){
 			if (lowerCase(structure.directive) == "space"){
-				if(!thereIsRot){
-					error("sin", lineNumber, "Diretiva SPACE sem rótulo");
-				}
 				if(regex_match(structure.lineCode, comp2)){
 					if(stoi(structure.number) > 0)
 						address += stoi(structure.number);
@@ -134,9 +131,6 @@ void Montador::fillTable(string filename){
 				}
 			}
 			else if(lowerCase(structure.directive) == "const"){
-				if(!thereIsRot){
-					error("sin", lineNumber, "Diretiva CONST sem rótulo");
-				}
 				if(!regex_match(structure.lineCode, comp2)){
 					error("sin", lineNumber, "Diretiva CONST sem número");
 				}
@@ -377,8 +371,8 @@ void Montador::dataSintaxe(string line, int lineNumber){
 	lineStruct structure = lineStructure(line);
 
 	// Verifica se a linha possui função.
-	regex comp8("(.*)(F)(.*)");
-	if(regex_match(structure.lineCode, comp8)){
+	regex comp("(.*)(F)(.*)");
+	if(regex_match(structure.lineCode, comp)){
 		error("sem", lineNumber, "Função na seção dados.");
 		return;
 	}
@@ -391,8 +385,8 @@ void Montador::dataSintaxe(string line, int lineNumber){
 			error("sin", lineNumber, "Rótulo declarado em local indevido.");
 		}
 	}
-	else{
-		error("sem", lineNumber, "Linha da seção dados sem rótulo.");
+	else {
+		error("sim", lineNumber, "Diretiva sem rótulo.");
 	}
 
 	//Verifica se a linha possui mais de uma diretiva.
