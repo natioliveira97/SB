@@ -33,6 +33,8 @@ void Montador::putTable(string token, int address, int type, int const_value){
 	\param token Nome do rótulo.
 	\return adresss Índice do rótulo se existente na tabela.
 	\return -1 Se o rótulo não existe na tabela.
+	\return -2 Se o endereço já existe na tabela.
+
 */
 int Montador::searchAddress(string token, int desiredAddress){
 	for(int i = 0; i < TABS.size(); ++i){
@@ -48,7 +50,7 @@ int Montador::searchAddress(string token, int desiredAddress){
 
 
 /** \brief Preenche a tabela de símbolos.
-	\details Percorre o arquivo pré-processado e coloca os rótulo na tabela de símbolos verificando se há erros léxicos e de dupla declaração de rótulo.
+	\details Percorre o arquivo pré-processado e coloca os rótulos na tabela de símbolos verificando se há erros léxicos e de dupla declaração de rótulo.
 	\param filename Nome do arquivo pré-processado.
 */
 void Montador::fillTable(string filename){
@@ -372,9 +374,15 @@ void Montador::textSintaxe(string line, int lineNumber){
 	\param line Conteúdo da linha.
 	\param lineNumber Número da linha.
 */
-
 void Montador::dataSintaxe(string line, int lineNumber){
 	lineStruct structure = lineStructure(line);
+	
+	// Verifica se a linha possui função.
+	regex comp8("(.*)(F)(.*)");
+	if(regex_match(structure.lineCode, comp8)){
+		error("sem", lineNumber, "Função na seção dados.");
+		return;
+	}
 
 	//Verifica se a linha possui rótulo.
 	regex comp1("(.*)(R)(.*)");
@@ -432,13 +440,6 @@ void Montador::dataSintaxe(string line, int lineNumber){
 	}
 	else
 		error("sem", lineNumber, "Linha da seção dados sem diretiva.");
-
-
-	// Verifica se a linha possui função.
-	regex comp8("(.*)(F)(.*)");
-	if(regex_match(structure.lineCode, comp8)){
-		error("sem", lineNumber, "Função na seção dados.");
-	}
 }
 
 

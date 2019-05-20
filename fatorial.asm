@@ -23,6 +23,7 @@ stop
 
 SECTIon DATa
 UM: const 0x1
+copy n d
 MIL: const 1000
 menos_um: const -1
 zero: const 0x0
