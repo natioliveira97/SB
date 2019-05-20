@@ -1,4 +1,6 @@
 #include <iostream>
+#include <cstdlib>
+#include <cstdio>
 #include "pre_processor.hpp"
 #include "montador.hpp"
 
@@ -18,9 +20,14 @@ int main(int argc, char **argv){
 	
 
 	preProcessor preProcessor;
-
 	preProcessor.run(filename);
 
 	Montador Montador;
 	Montador.run(filename);
+
+	if(Montador.erro == true){
+		cout << "Não foi possível montar o arquivo." << endl;
+		string filename2 = filename + ".obj";
+		remove(filename2.c_str());
+	}
 }

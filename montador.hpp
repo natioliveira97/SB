@@ -31,8 +31,6 @@ private:
 	void textSintaxe(string line, int lineNumber);
 	void dataSintaxe(string line, int lineNumber);
 
-	bool erro = false;
-
 	ifstream textFile;
 	ofstream objFile;
 
@@ -40,7 +38,7 @@ private:
 public:
 
 	vector <tabelaSimbolos> TABS;
-
+	bool erro = false;
 	void run(string filename);
 
 };

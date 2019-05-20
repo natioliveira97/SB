@@ -34,7 +34,6 @@ void Montador::putTable(string token, int address, int type, int const_value){
 	\return adresss Índice do rótulo se existente na tabela.
 	\return -1 Se o rótulo não existe na tabela.
 	\return -2 Se o endereço já existe na tabela.
-
 */
 int Montador::searchAddress(string token, int desiredAddress){
 	for(int i = 0; i < TABS.size(); ++i){
@@ -376,7 +375,7 @@ void Montador::textSintaxe(string line, int lineNumber){
 */
 void Montador::dataSintaxe(string line, int lineNumber){
 	lineStruct structure = lineStructure(line);
-	
+
 	// Verifica se a linha possui função.
 	regex comp8("(.*)(F)(.*)");
 	if(regex_match(structure.lineCode, comp8)){
@@ -502,7 +501,6 @@ void Montador::secondPass(string filename){
 	objFile.close();
 }
 
-
 /** \brief Imprime na tela a tabela de símbolos com os nomes dos rótulos e seus respectivos endereços.
 */
 void Montador::printTable(){
@@ -512,7 +510,6 @@ void Montador::printTable(){
 		cout << TABS[i].name << "\t" << TABS[i].address << "\t\t" << TABS[i].type << "\t" << TABS[i].const_value <<  endl;
 	}
 }
-
 
 /** \brief Imprime na tela os tipo de erro e a linha em que se encontra e atribui true à variável erro indicando que o arquivo apresentou erro de compilação.
 	\param erroType Tipo de erro, que pode ser léxico, sintático ou semântico.
@@ -531,7 +528,6 @@ void Montador::error(string errorType, int lineNumber, string description){
 		cout << "Erro semântico na linha " << lineNumber << ": " << description << endl;
 	}
 }
-
 
 void Montador::run(string filename){
 	fillTable(filename);
