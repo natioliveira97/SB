@@ -2,6 +2,7 @@
 a.out
 *.temp
 *.pre
+*.obj
 CMakeCache.txt
 cmake_install.cmake
 tradutor
