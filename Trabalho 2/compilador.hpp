@@ -35,7 +35,10 @@ private:
 	void s_output(lineStruct structure);
 	void stop(lineStruct structure);
 
+	bool lerInteiro = false;
+	bool escreveInteiro = false;
 
+	void printFuncoes();
 	void textSintaxe(string line);
 	void dataSintaxe(string line);
 	void transformIA32(string filename);

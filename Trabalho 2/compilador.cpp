@@ -59,14 +59,16 @@ void Compilador::input(lineStruct structure){
 	IA32File << "call LerInteiro" << endl;
 	IA32File << "add esp, 4" << endl;
 	IA32File << "pop eax" << endl;
+	lerInteiro = true;
 }
 
 void Compilador::output(lineStruct structure){
 	IA32File << "push eax" << endl;
 	IA32File << "push " << structure.notDefined[0] << endl;
-	IA32File << "call EscreveInteiro" << endl;
+	IA32File << "call EscreverInteiro" << endl;
 	IA32File << "add esp, 4" << endl;
 	IA32File << "pop eax" << endl;
+	escreveInteiro = true;
 }
 
 void Compilador::c_input(lineStruct structure){
@@ -80,25 +82,43 @@ void Compilador::c_input(lineStruct structure){
 void Compilador::c_output(lineStruct structure){
 	IA32File << "push eax" << endl;
 	IA32File << "push " << structure.notDefined[0] << endl;
-	IA32File << "call EscreveChar" << endl;
+	IA32File << "call EscreverChar" << endl;
 	IA32File << "add esp, 4" << endl;
 	IA32File << "pop eax" << endl;
 }
 
 void Compilador::h_input(lineStruct structure){
-	IA32File << "h_input" << endl;
+	IA32File << "push eax" << endl;
+	IA32File << "push " << structure.notDefined[0] << endl;
+	IA32File << "call LerHexa" << endl;
+	IA32File << "add esp, 4" << endl;
+	IA32File << "pop eax" << endl;
 }
 
 void Compilador::h_output(lineStruct structure){
-	IA32File << "h_output" << endl;
+	IA32File << "push eax" << endl;
+	IA32File << "push " << structure.notDefined[0] << endl;
+	IA32File << "call EscreverHexa" << endl;
+	IA32File << "add esp, 4" << endl;
+	IA32File << "pop eax" << endl;
 }
 
 void Compilador::s_input(lineStruct structure){
-	IA32File << "s_input" << endl;
+	IA32File << "push eax" << endl;
+	IA32File << "push DWORD " << structure.number << endl;
+	IA32File << "push " << structure.notDefined[0] << endl;
+	IA32File << "call LerString" << endl;
+	IA32File << "add esp, 8" << endl;
+	IA32File << "pop eax" << endl;
 }
 
 void Compilador::s_output(lineStruct structure){
-	IA32File << "s_output" << endl;
+	IA32File << "push eax" << endl;
+	IA32File << "push DWORD " << structure.number << endl;
+	IA32File << "push " << structure.notDefined[0] << endl;
+	IA32File << "call EscreverString" << endl;
+	IA32File << "add esp, 8" << endl;
+	IA32File << "pop eax" << endl;
 }
 
 void Compilador::stop(lineStruct structure){
@@ -115,6 +135,13 @@ void Compilador::textSintaxe(string line){
 
 	if(!structure.rot.empty()){
 		IA32File << structure.rot << " ";
+	}
+
+	if(structure.lineCode.find('S')!=string::npos){
+		int n = stoi(structure.number)*4;
+		structure.notDefined[0] = structure.notDefined[0]+"+"+to_string(n);
+		cout<<structure.notDefined[0]<<endl;
+		cout<<to_string(n)<<endl;
 	}
 
 	if(!structure.funct.empty()){
@@ -180,11 +207,23 @@ void Compilador::textSintaxe(string line){
 			stop(structure);
 		}
 	}
+
+}
+
+void Compilador::printFuncoes(){
+	string line;
+	ifstream funcoes("funcoes.asm");
+	while(getline(funcoes,line)){
+		IA32File << line << endl;
+	}
+
 }
 
 void Compilador::dataSintaxe(string line){
 	lineStruct structure;
 	structure = lineStructure(line);
+
+	cout<<line << "    " << structure.lineCode << endl;
 
 	if(!structure.rot.empty()){
 		string rot = structure.rot;
@@ -248,6 +287,7 @@ void Compilador::transformIA32(string filename){
 				continue;
 			}
 			else if(lowerCase(line) == "section data"){
+				printFuncoes();
 				IA32File << "section .data" << endl;
 				section = 2;
 				continue;

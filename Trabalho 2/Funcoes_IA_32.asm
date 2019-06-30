@@ -11,27 +11,33 @@ section .text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 LerInteiro:
-enter 13,0
 
-mov eax,3
-mov ebx,0
-mov ecx,ebp
-sub ecx,13
-mov edx,13
+; Reserva 13 bytes na pilha para lidar com os 11 caracteres possiveis de um numero de
+; 32 bits, mais um caracter para o sinal, mais um para o enter
+
+enter 13, 0 
+
+
+mov eax,3	; Codigo para leitura
+mov ebx,0	; Codigo para teclado
+mov ecx,ebp ; ecx aponta para fim da pilha
+sub ecx,13	
+mov edx,13	; Maximo de 13 caracteres para leitura
 int 80h
 
-push eax
+push eax  	
 
 sub 	 eax,eax
 mov 	 ecx,10
 cmp byte [ebp-13],'-'
 je 	 	 neg
 
-mov 	 esi,-13
+
+mov 	 esi,-13 ; Numero positivo
 jmp 	 transformaC2I
 
 neg:
-mov 	 esi,-12
+mov 	 esi,-12 ; Numero negativo, primeiro caracter eh sinal
 
 transformaC2I:
 sub byte [ebp+esi],'0'
@@ -40,14 +46,14 @@ mov 	 bl,[ebp+esi]
 add 	 eax,ebx
 inc 	 esi
 cmp byte [ebp+esi],0ah
-je 		 fimI
+je 		 pronto
 imul 	 ecx
 jmp 	 transformaC2I
 
 
 pronto:
 cmp byte [ebp-13],'-'
-jne 	 fim
+jne 	 fimI
 mov 	 ebx,-1
 imul 	 ebx
 
@@ -204,7 +210,9 @@ Nnumber2:
 add byte [ebp+esi],10-'a'
 
 iteracao:
-add 	 eax,[ebp+esi]
+sub ebx, ebx
+mov BYTE bl, [ebp+esi]
+add 	 eax, ebx
 inc 	 esi
 cmp byte [ebp+esi],0ah
 je 		 fim
@@ -212,8 +220,10 @@ shl 	 eax,4
 jmp 	 transformaC2H
 
 
+
 fim:
-mov 	 [ebp+8],eax
+mov 	 ebx,[ebp+8]
+mov 	 [ebx],eax
 pop 	 eax
 leave
 ret
@@ -222,6 +232,7 @@ ret
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 EscreverHexa:
+enter 0,0
 mov 	 ebx,[ebp+8]
 mov 	 eax,[ebx]
 sub 	 esi,esi
@@ -261,6 +272,12 @@ ret
 
 global _start
 _start:
+
+push DWORD a
+call LerInteiro
+pop DWORD eax
+push DWORD a
+call EscreverInteiro
 
 
 

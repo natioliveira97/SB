@@ -1,27 +1,3 @@
-section .text
-global _start
-_start:
-push eax
-push n
-call LerInteiro
-add esp, 4
-pop eax
-mov DWORD eax, [n]
-add eax, [dois]
-mov DWORD [n], eax
-push eax
-push n
-call EscreverInteiro
-add esp, 4
-pop eax
-push eax
-push n
-call EscreverHexa
-add esp, 4
-pop eax
-mov eax, 1
-mov ebx, 0
-int 80h
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;							Funcoes                          ;
@@ -213,6 +189,3 @@ mov	 	 edx,esi
 int 80h
 leave
 ret
-section .data
-n dd 0
-dois dd 2
