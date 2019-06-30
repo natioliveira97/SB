@@ -1,4 +1,4 @@
-;Funções de imput e output IA-32
+;Funções de input e output IA-32
 
 section .data
 a dd 0,0,0
@@ -20,7 +20,7 @@ sub ecx,13
 mov edx,13
 int 80h
 
-mov [a],eax
+push eax
 
 sub 	 eax,eax
 mov 	 ecx,10
@@ -39,8 +39,8 @@ sub      ebx,ebx
 mov 	 bl,[ebp+esi]
 add 	 eax,ebx
 inc 	 esi
-cmp 	 byte [ebp+esi],0ah
-je 		 fim
+cmp byte [ebp+esi],0ah
+je 		 fimI
 imul 	 ecx
 jmp 	 transformaC2I
 
@@ -51,11 +51,11 @@ jne 	 fim
 mov 	 ebx,-1
 imul 	 ebx
 
-fim:
+fimI:
 mov 	 ebx,[ebp+8]
 mov 	 [ebx],eax
 
-mov eax,[a]
+pop eax
 
 leave
 ret
@@ -81,20 +81,20 @@ transformaI2C:
 sub 	 edx,edx
 idiv 	 ecx
 add 	 edx,'0'
-;sub 	 esp,1
-;mov byte [esp],dl
+sub 	 esp,1
+mov byte [esp],dl
 inc 	 esi
 cmp 	 eax,0
 jne 	 transformaI2C
 
 cmp 	 ebx,0
-jge		 imprime
+jge		 imprimeI
 
-;sub 	 esp,1
-;mov byte [esp],'-'
+sub 	 esp,1
+mov byte [esp],'-'
 inc 	 esi
 
-imprime:
+imprimeI:
 mov 	 eax,4
 mov 	 ebx,1
 mov	 	 ecx,esp
@@ -119,7 +119,7 @@ mov edx,2
 int 80h
 
 mov 	 ebx,[ebp+8]
-mov 	 ecx,[ebp-2]
+mov 	 cl,[ebp-2]
 mov 	 [ebx],ecx
 
 leave
@@ -131,13 +131,11 @@ ret
 EscreverChar:
 enter 0,0
 
-mov ebx,[ebp]
-
 mov eax,4
 mov ebx,1
-;mov ecx,[ebp+8]
-;mov edx,1
-;int 80h
+mov ecx,[ebp+8]
+mov edx,1
+int 80h
 
 leave
 ret
@@ -172,13 +170,98 @@ int 80h
 leave
 ret
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+LerHexa:
+enter 9,0
+
+mov eax,3
+mov ebx,0
+mov ecx,ebp
+sub ecx,9
+mov edx,9
+int 80h
+
+push 	 eax
+sub 	 eax,eax
+
+mov 	 esi,-9
+
+transformaC2H:
+cmp byte [ebp+esi],'9'
+jg 	 	 Nnumber1
+sub byte [ebp+esi],'0'
+jmp 	 iteracao
+
+Nnumber1:
+cmp byte [ebp+esi],'F'
+jg 	 	 Nnumber2
+add byte [ebp+esi],10-'A'
+jmp 	 iteracao
+
+Nnumber2:
+add byte [ebp+esi],10-'a'
+
+iteracao:
+add 	 eax,[ebp+esi]
+inc 	 esi
+cmp byte [ebp+esi],0ah
+je 		 fim
+shl 	 eax,4
+jmp 	 transformaC2H
 
 
+fim:
+mov 	 [ebp+8],eax
+pop 	 eax
+leave
+ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+EscreverHexa:
+mov 	 ebx,[ebp+8]
+mov 	 eax,[ebx]
+sub 	 esi,esi
+mov 	 ecx,16
+
+transformaH2C:
+sub 	 edx,edx
+idiv 	 ecx
+cmp 	 edx,10
+jge 	 letra
+add 	 edx,'0'
+jmp 	 empilha
+
+letra:
+add 	 edx,'a'-10
+
+
+empilha:
+sub 	 esp,1
+mov byte [esp],dl
+inc 	 esi
+cmp 	 eax,0
+jne 	 transformaH2C
+
+imprimeH:
+mov 	 eax,4
+mov 	 ebx,1
+mov	 	 ecx,esp
+mov	 	 edx,esi
+int 80h
+
+leave
+ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 global _start
 _start:
-push char
-;call EscreverChar
+
 
 
 mov eax,1
