@@ -16,10 +16,10 @@ sub 	 eax,eax
 mov 	 ecx,10
 cmp byte [ebp-13],'-'
 je 	 	 neg
-mov 	 esi,-13 ; Numero positivo
+mov 	 esi,-13 
 jmp 	 transformaC2I
 neg:
-mov 	 esi,-12 ; Numero negativo, primeiro caracter eh sinal
+mov 	 esi,-12 
 transformaC2I:
 sub byte [ebp+esi],'0'
 sub      ebx,ebx
@@ -112,10 +112,19 @@ ret
 
 EscreverString:
 enter 0,0
+mov esi,1
+acha_enter:
+mov eax,[ebp+8]
+cmp byte [eax+esi-1],0ah
+je  imprime_s
+inc esi
+cmp esi,[ebp+12]
+jl acha_enter
+imprime_s:
 mov eax,4
 mov ebx,1
 mov ecx,[ebp+8]
-mov edx,[ebp+12]
+mov edx,esi
 int 80h
 leave
 ret
