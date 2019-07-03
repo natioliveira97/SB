@@ -91,20 +91,10 @@ lineStruct parserIA_32::lineStructure(string line){
 			structure.funct = token;
 			structure.lineCode = structure.lineCode + "F";
 		}
-		// Se é argumento de função
-		else if(isArg(token)){
-			structure.arg.push_back(token);
-			structure.lineCode = structure.lineCode + "A";
-		}
 		// Se é diretiva
 		else if(isRegister(token)){
 			structure.reg = token;
 			structure.lineCode = structure.lineCode + "X";
-		}
-		// Se é argumento de macro
-		else if(isMacroArg(token)){
-			structure.macroArg.push_back(token);
-			structure.lineCode = structure.lineCode + "E";
 		}
 		// Se é sinal de +
 		else if(isPlusSign(token)){

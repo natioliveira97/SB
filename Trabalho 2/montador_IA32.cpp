@@ -2,6 +2,30 @@
 
 using namespace std;
 
+	char LerInteiro_code [] = {'\xC8', '\x0D', '\x00', '\x00', '\xB8', '\x03', '\x00', '\x00', '\x00', '\xBB', '\x00', '\x00', '\x00', '\x00', '\x89', '\xE9', '\x83', '\xE9', '\x0D', '\xBA', '\x0D', '\x00', '\x00', '\x00', '\xCD', '\x80', '\x50', '\x29', '\xC0', '\xB9', '\x0A', '\x00', '\x00', '\x00', '\x80', '\x7D', '\xF3', '\x2D', '\x74', '\x07', '\xBE', '\xF3', '\xFF', '\xFF', '\xFF', '\xEB', '\x05', '\xBE', '\xF4', '\xFF', '\xFF', '\xFF', '\x80', '\x6C', '\x35', '\x00', '\x30', '\x29', '\xDB', '\x8A', '\x5C', '\x35', '\x00', '\x01', '\xD8', '\x46', '\x80', '\x7C', '\x35', '\x00', '\x0A', '\x74', '\x15', '\xF7', '\xE9', '\xEB', '\xE7', '\x80', '\x7D', '\xF3', '\x2D', '\x0F', '\x85', '\x24', '\x01', '\x00', '\x00', '\xBB', '\xFF', '\xFF', '\xFF', '\xFF', '\xF7', '\xEB', '\x8B', '\x5D', '\x08', '\x89', '\x03', '\x58', '\xC9', '\xC3'};
+	int LerInteiro_size = 0xe1-0x80;
+
+	char EscreverInteiro_code[] = {'\xC8', '\x00', '\x00', '\x00', '\x8B', '\x5D', '\x08', '\x8B', '\x03', '\x29', '\xF6', '\xB9', '\x0A', '\x00', '\x00', '\x00', '\xBB', '\x01', '\x00', '\x00', '\x00', '\x83', '\xF8', '\x00', '\x7D', '\x07', '\xBB', '\xFF', '\xFF', '\xFF', '\xFF', '\xF7', '\xEB', '\x29', '\xD2', '\xF7', '\xF9', '\x83', '\xC2', '\x30', '\x83', '\xEC', '\x01', '\x88', '\x14', '\x24', '\x46', '\x83', '\xF8', '\x00', '\x75', '\xED', '\x83', '\xFB', '\x00', '\x7D', '\x08', '\x83', '\xEC', '\x01', '\xC6', '\x04', '\x24', '\x2D', '\x46', '\xB8', '\x04', '\x00', '\x00', '\x00', '\xBB', '\x01', '\x00', '\x00', '\x00', '\x89', '\xE1', '\x89', '\xF2', '\xCD', '\x80', '\xC9', '\xC3'};
+	int EscreverInteiro_size = 0x134-0xe2;
+
+	char LerChar_code[] = {'\xC8', '\x02', '\x00', '\x00', '\xB8', '\x03', '\x00', '\x00', '\x00', '\xBB', '\x00', '\x00', '\x00', '\x00', '\x89', '\xE9', '\x83', '\xE9', '\x02', '\xBA', '\x02', '\x00', '\x00', '\x00', '\xCD', '\x80', '\x8B', '\x5D', '\x08', '\x8A', '\x4D', '\xFE', '\x89', '\x0B', '\xC9', '\xC3'};
+	int LerChar_size = 0x158-0x135;
+
+	char EscreverChar_code[] = {'\xC8', '\x00', '\x00', '\x00', '\xB8', '\x04', '\x00', '\x00', '\x00', '\xBB', '\x01', '\x00', '\x00', '\x00', '\x8B', '\x4D', '\x08', '\xBA', '\x01', '\x00', '\x00', '\x00', '\xCD', '\x80', '\xC9', '\xC3'};
+	int EscreverChar_size = 0x172-0x159;
+
+	char LerString_code[] = {'\xC8', '\x00', '\x00', '\x00', '\xB8', '\x03', '\x00', '\x00', '\x00', '\xBB', '\x00', '\x00', '\x00', '\x00', '\x8B', '\x4D', '\x08', '\x8B', '\x55', '\x0C', '\xCD', '\x80', '\xC9', '\xC3'};
+	int LerString_size = 0x18a-0x173;
+
+	char EscreverString_code[] = {'\xc8', '\x00', '\x00', '\x00', '\xbe', '\x01', '\x00', '\x00', '\x00','\x8b', '\x45', '\x08', '\x80', '\x7c', '\x30', '\xff', '\x0a','\x74', '\x06', '\x46', '\x3b', '\x75', '\x0c', '\x7c', '\xf0', '\xb8', '\x04', '\x00', '\x00','\x00', '\xbb','\x01', '\x00', '\x00', '\x00', '\x8b', '\x4d', '\x08', '\x89', '\xf2', '\xcd', '\x80', '\xc9', '\xc3'};
+	int EscreverString_size = 0x1b6-0x18b;
+
+	char LerHexa_code[] = {'\xC8', '\x09', '\x00', '\x00', '\xB8', '\x03', '\x00', '\x00', '\x00', '\xBB', '\x00', '\x00', '\x00', '\x00', '\x89', '\xE9', '\x83', '\xE9', '\x09', '\xBA', '\x09', '\x00', '\x00', '\x00', '\xCD', '\x80', '\x50', '\x29', '\xC0', '\xBE', '\xF7', '\xFF', '\xFF', '\xFF', '\x80', '\x7C', '\x35', '\x00', '\x39', '\x7F', '\x07', '\x80', '\x6C', '\x35', '\x00', '\x30', '\xEB', '\x13', '\x80', '\x7C', '\x35', '\x00', '\x46', '\x7F', '\x07', '\x80', '\x44', '\x35', '\x00', '\xC9', '\xEB', '\x05', '\x80', '\x44', '\x35', '\x00', '\xA9', '\x03', '\x44', '\x35', '\x00', '\x46', '\x80', '\x7C', '\x35', '\x00', '\x0A', '\x74', '\x05', '\xC1', '\xE0', '\x04', '\xEB', '\xCE', '\x89', '\x45', '\x08', '\x58', '\xC9', '\xC3'};
+	int LerHexa_size = 0x202-0x1a3;
+
+	char EscreverHexa_code[] = {'\xC8', '\x00', '\x00', '\x00', '\x8B', '\x5D', '\x08', '\x8B', '\x03', '\x29', '\xF6', '\xB9', '\x10', '\x00', '\x00', '\x00', '\x29', '\xD2', '\xF7', '\xF9', '\x83', '\xFA', '\x0A', '\x7D', '\x05', '\x83', '\xC2', '\x30', '\xEB', '\x03', '\x83', '\xC2', '\x57', '\x83', '\xEC', '\x01', '\x88', '\x14', '\x24', '\x46', '\x83', '\xF8', '\x00', '\x75', '\xE3', '\xB8', '\x04', '\x00', '\x00', '\x00', '\xBB', '\x01', '\x00', '\x00', '\x00', '\x89', '\xE1', '\x89', '\xF2', '\xCD', '\x80', '\xC9', '\xC3'};
+	int EscreverHexa_size = 0x241-0x203;
+
 
 // void Montador::add(lineStruct structure){
 // 	IA32File << "add eax, [" << structure.notDefined[0] << "]" << endl;
@@ -314,105 +338,105 @@ void Montador::traduzLinha(string line){
 }
 
 
-// void Montador::printFuncoes(){
-// 	string line;
-// 	ifstream funcoes("funcoes.asm");
-// 	while(getline(funcoes,line)){
-// 		IA32File << line << endl;
-// 	}
+void Montador::printFuncoes(){
+	string line;
+	ifstream funcoes("funcoes.asm");
+	while(getline(funcoes,line)){
+		IA32File << line << endl;
+	}
 
-// }
+}
 
-// void Montador::dataSintaxe(string line){
-// 	lineStruct structure;
-// 	structure = lineStructure(line);
+void Montador::dataSintaxe(string line){
+	lineStruct structure;
+	structure = lineStructure(line);
 
-// 	cout<<line << "    " << structure.lineCode << endl;
+	cout<<line << "    " << structure.lineCode << endl;
 
-// 	// if(!structure.rot.empty()){
-// 	// 	string rot = structure.rot;
-// 	// 	rot.pop_back();
-// 	// 	IA32File << rot << " ";
-// 	// }
+	// if(!structure.rot.empty()){
+	// 	string rot = structure.rot;
+	// 	rot.pop_back();
+	// 	IA32File << rot << " ";
+	// }
 
-// 	// if(!structure.directive.empty()){
-// 	// 	if(structure.directive == "const"){
-// 	// 		if(!structure.number.empty()){
-// 	// 			IA32File << "dd " << structure.number << endl; 
-// 	// 		}
-// 	// 		else if(!structure.character.empty()){
-// 	// 			IA32File << "dd " << structure.character << endl;
-// 	// 		}
-// 	// 	}
-// 	// 	else if(structure.directive == "space"){
-// 	// 		int n = 1;
-// 	// 		if(!structure.number.empty()){
-// 	// 			n = stoi(structure.number);
-// 	// 		}
-// 	// 		IA32File << "dd"; 
-// 	// 		for(int i=0; i<n; ++i){
-// 	// 			IA32File << " 0";
-// 	// 			if(i < n-1){
-// 	// 				IA32File << ",";
-// 	// 			}
-// 	// 		}
-// 	// 		IA32File << endl;
-// 	// 	}
+	// if(!structure.directive.empty()){
+	// 	if(structure.directive == "const"){
+	// 		if(!structure.number.empty()){
+	// 			IA32File << "dd " << structure.number << endl; 
+	// 		}
+	// 		else if(!structure.character.empty()){
+	// 			IA32File << "dd " << structure.character << endl;
+	// 		}
+	// 	}
+	// 	else if(structure.directive == "space"){
+	// 		int n = 1;
+	// 		if(!structure.number.empty()){
+	// 			n = stoi(structure.number);
+	// 		}
+	// 		IA32File << "dd"; 
+	// 		for(int i=0; i<n; ++i){
+	// 			IA32File << " 0";
+	// 			if(i < n-1){
+	// 				IA32File << ",";
+	// 			}
+	// 		}
+	// 		IA32File << endl;
+	// 	}
 
-// 	// }
-// }
+	// }
+}
 
 
-// void Montador::transformIA32(string filename){
-// 	string filename1 = filename + ".pre";
-// 	string filename2 = filename + ".s";
+void Montador::transformIA32(string filename){
+	string filename1 = filename + ".pre";
+	string filename2 = filename + ".s";
 
-// 	ifstream textFile(filename1);
-// 	IA32File.open(filename2);
-// 	string line;
-// 	int section = 0;
+	ifstream textFile(filename1);
+	IA32File.open(filename2);
+	string line;
+	int section = 0;
 
-// 	if(!textFile.is_open()){
-// 		cout << "Nao foi possivel abrir arquivo " << filename1 << endl;
-// 	}
-// 	if(!IA32File.is_open()){
-// 		cout << "Nao foi possivel abrir arquivo " << filename2 << endl;
-// 	}
+	if(!textFile.is_open()){
+		cout << "Nao foi possivel abrir arquivo " << filename1 << endl;
+	}
+	if(!IA32File.is_open()){
+		cout << "Nao foi possivel abrir arquivo " << filename2 << endl;
+	}
 
-// 	while(getline(textFile,line)){
-// 		string line2 = lowerCase(line);
+	while(getline(textFile,line)){
+		string line2 = lowerCase(line);
 
-// 		if(line2.find("section") != string::npos){
-// 			if(lowerCase(line) == "section text"){
-// 				IA32File << "section .text" << endl;
-// 				IA32File << "global _start" << endl;
-// 				IA32File << "_start:" << endl;
-// 				section = 1;
-// 				continue;
-// 			}
-// 			else if(lowerCase(line) == "section data"){
-// 				//printFuncoes();
-// 				IA32File << "section .data" << endl;
-// 				section = 2;
-// 				continue;
-// 			}
-// 			else{
-// 				section = 3;
-// 			}
-// 		}
-// 		if(section == 1){
-// 			textSintaxe(line2);
-// 		}
-// 		if(section == 2){
-// 			dataSintaxe(line2);
-// 		}
+		if(line2.find("section") != string::npos){
+			if(lowerCase(line) == "section text"){
+				IA32File << "section .text" << endl;
+				IA32File << "global _start" << endl;
+				IA32File << "_start:" << endl;
+				section = 1;
+				continue;
+			}
+			else if(lowerCase(line) == "section data"){
+				//printFuncoes();
+				IA32File << "section .data" << endl;
+				section = 2;
+				continue;
+			}
+			else{
+				section = 3;
+			}
+		}
+		if(section == 1){
+			textSintaxe(line2);
+		}
+		if(section == 2){
+			dataSintaxe(line2);
+		}
 
-// 	}
+	}
 
-// 	textFile.close();
-// }
+	textFile.close();
+}
 
-// void Montador::run(string filename){
-// 	transformIA32(filename);
+void Montador::run(string filename){
+	transformIA32(filename);
 
-// }
+}
