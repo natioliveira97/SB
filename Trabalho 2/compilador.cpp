@@ -131,7 +131,6 @@ void Compilador::textSintaxe(string line){
 	lineStruct structure;
 	structure = lineStructure(line);
 
-	cout << line <<"  "<<structure.lineCode << endl;
 
 	if(!structure.rot.empty()){
 		IA32File << structure.rot << " ";
@@ -140,8 +139,6 @@ void Compilador::textSintaxe(string line){
 	if(structure.lineCode.find('S')!=string::npos){
 		int n = stoi(structure.number)*4;
 		structure.notDefined[0] = structure.notDefined[0]+"+"+to_string(n);
-		cout<<structure.notDefined[0]<<endl;
-		cout<<to_string(n)<<endl;
 	}
 
 	if(!structure.funct.empty()){
@@ -223,7 +220,6 @@ void Compilador::dataSintaxe(string line){
 	lineStruct structure;
 	structure = lineStructure(line);
 
-	cout<<line << "    " << structure.lineCode << endl;
 
 	if(!structure.rot.empty()){
 		string rot = structure.rot;
@@ -306,6 +302,8 @@ void Compilador::transformIA32(string filename){
 	}
 
 	textFile.close();
+	remove(filename1.c_str());
+	IA32File.close();
 }
 
 void Compilador::run(string filename){

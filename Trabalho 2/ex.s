@@ -1,32 +1,4 @@
 section .text
-global _start
-_start:
-push eax
-push n
-call LerInteiro
-add esp, 4
-pop eax
-mov DWORD eax, [n]
-add eax, [dois]
-mov DWORD [n], eax
-push eax
-push n
-call EscreverInteiro
-add esp, 4
-pop eax
-push eax
-push n
-call EscreverHexa
-add esp, 4
-pop eax
-mov eax, 1
-mov ebx, 0
-int 80h
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;							Funcoes                          ;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 LerInteiro:
 enter 13, 0 
 mov eax,3	
@@ -40,10 +12,10 @@ sub 	 eax,eax
 mov 	 ecx,10
 cmp byte [ebp-13],'-'
 je 	 	 neg
-mov 	 esi,-13 ; Numero positivo
+mov 	 esi,-13 
 jmp 	 transformaC2I
 neg:
-mov 	 esi,-12 ; Numero negativo, primeiro caracter eh sinal
+mov 	 esi,-12 
 transformaC2I:
 sub byte [ebp+esi],'0'
 sub      ebx,ebx
@@ -136,10 +108,19 @@ ret
 
 EscreverString:
 enter 0,0
+mov esi,1
+acha_enter:
+mov eax,[ebp+8]
+cmp byte [eax+esi-1],0ah
+je  imprime_s
+inc esi
+cmp esi,[ebp+12]
+jl acha_enter
+imprime_s:
 mov eax,4
 mov ebx,1
 mov ecx,[ebp+8]
-mov edx,[ebp+12]
+mov edx,esi
 int 80h
 leave
 ret
@@ -213,6 +194,29 @@ mov	 	 edx,esi
 int 80h
 leave
 ret
+global _start
+_start:
+push eax
+push n
+call LerInteiro
+add esp, 4
+pop eax
+mov DWORD eax, [n]
+add eax, [dois]
+mov DWORD [n], eax
+push eax
+push n
+call EscreverInteiro
+add esp, 4
+pop eax
+push eax
+push n
+call EscreverHexa
+add esp, 4
+pop eax
+mov eax, 1
+mov ebx, 0
+int 80h
 section .data
 n dd 0
 dois dd 2

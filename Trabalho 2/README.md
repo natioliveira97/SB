@@ -1,4 +1,4 @@
-# Montador
+# Trabalho 2
 
 ## Informações
 
@@ -12,11 +12,18 @@ O GitHub do projeto pode ser acessado pelo [link](https://github.com/natioliveir
 
 ## Objetivos
 
-Esse trabalho é uma implementação de um montador que transforma um arquivo texto da linguagem assembly inventada em aula em arquivo objeto.
+### Parte 1
+
+O objetivo da parte 1 do trabalho é criar um compilador que traduz o assembly inventado usado no trabalho passado para assembly IA32.
+
+### Parte 2
+
+O objetivo da parte 2 do trabalho é a partir do arquivo IA32 de saída da parte 1, criar um arquivo executável em formato elf.
+
 
 ## Conteúdo do pacote
 
-O trabalho foi dividido em vários arquivos, são eles:
+### Parte 1
 
 - scanner.cpp
 - scanner.hpp
@@ -24,10 +31,9 @@ O trabalho foi dividido em vários arquivos, são eles:
 - parser.hpp
 - pre_processor.cpp
 - pre_processor.hpp
-- montador.cpp
-- montador.hpp
+- compilador.cpp
+- compilador.hpp
 
-Para auxiliar a compilação também foi feito um Makefile.
 
 ## Bibliotecas utilizadas:
 
@@ -36,13 +42,15 @@ Para auxiliar a compilação também foi feito um Makefile.
 - regex
 - cstdlib
 - cstdio
+- elfio
 
-Todas elas são bibliotecas padrão do C++11.
 
 
 ## Como compilar:
 
-Para compilar esse trabalho faça:
+### Parte 1
+
+Para compilar a primeira parte do trabalho faça:
 
 ```bash
 make
@@ -50,7 +58,9 @@ make
 
 ## Como executar:
 
-Para executar esse trabalho faça:
+### Parte 1
+
+Para executar a primeira parte do trabalho faça:
 
 ```bash
 ./tradutor myprogram.asm
@@ -58,6 +68,6 @@ Para executar esse trabalho faça:
 
 ## Saída do programa
 
-Esse programa recebe um arquivo myprogram.asm e retorna dois arquivos myprogram.pre, arquivo pré processado, e myprogram.obj, arquivo objeto.
+### Parte 1
 
-Se houver erro de montagem, o arquivo objeto não é criado.
+Esse programa recebe um arquivo myprogram.asm e retorna um arquivo em formato assembly IA32 myprogram.s.
