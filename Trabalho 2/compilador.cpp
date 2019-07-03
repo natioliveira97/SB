@@ -12,13 +12,13 @@ void Compilador::sub(lineStruct structure){
 
 void Compilador::mult(lineStruct structure){
 	IA32File << "mov DWORD ebx, [" << structure.notDefined[0] << "]" << endl;
-	IA32File << "mult ebx" << endl;
+	IA32File << "imul ebx" << endl;
 }
 
 void Compilador::div(lineStruct structure){
-	IA32File << "mov edx, 0" << endl;
+	IA32File << "cdq" << endl;
 	IA32File << "mov DWORD ebx, [" << structure.notDefined[0] << "]" << endl;
-	IA32File << "mult ebx" << endl;
+	IA32File << "idiv ebx" << endl;
 }
 
 void Compilador::jmp(lineStruct structure){
