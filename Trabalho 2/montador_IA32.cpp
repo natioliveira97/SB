@@ -1,6 +1,7 @@
-#include "compilador.hpp"
+#include "montador_IA32hpp"
 
 using namespace std;
+
 
 // void Montador::add(lineStruct structure){
 // 	IA32File << "add eax, [" << structure.notDefined[0] << "]" << endl;
