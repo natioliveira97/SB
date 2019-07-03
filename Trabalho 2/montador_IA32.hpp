@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <regex>
-#include "parser.hpp"
+#include "parserIA_32.hpp"
 
 using namespace std;
 
@@ -37,6 +37,9 @@ private:
 
 	char EscreverHexa_code = {'\xC8', '\x00', '\x00', '\x00', '\x8B', '\x5D', '\x08', '\x8B', '\x03', '\x29', '\xF6', '\xB9', '\x10', '\x00', '\x00', '\x00', '\x29', '\xD2', '\xF7', '\xF9', '\x83', '\xFA', '\x0A', '\x7D', '\x05', '\x83', '\xC2', '\x30', '\xEB', '\x03', '\x83', '\xC2', '\x57', '\x83', '\xEC', '\x01', '\x88', '\x14', '\x24', '\x46', '\x83', '\xF8', '\x00', '\x75', '\xE3', '\xB8', '\x04', '\x00', '\x00', '\x00', '\xBB', '\x01', '\x00', '\x00', '\x00', '\x89', '\xE1', '\x89', '\xF2', '\xCD', '\x80', '\xC9', '\xC3'};
 	int EscreverHexa_size = 0x241-0x203;
+
+	string code;
+	int size;
 
 
 	// void add(lineStruct structure);

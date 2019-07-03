@@ -1,4 +1,4 @@
-#include "montador_IA32hpp"
+#include "montador_IA32.hpp"
 
 using namespace std;
 
@@ -215,220 +215,204 @@ using namespace std;
 void Montador::traduzLinha(string line){
 	lineStruct structure = lineStructure(line);
 
-	if(structure.funct ="add"){
-		if(structure.reg = "eax"){
+	code = "";
+	size = 0;
+
+	cout << structure.lineCode << endl;
+
+	if(structure.funct =="add"){
+		if(structure.reg == "eax"){
 			// 
-		}else if(structure.reg ="esp"){
-			if(structure.number = '4'){
+		}else if(structure.reg =="esp"){
+			if(structure.number == "4"){
 				// \x83\xC4\x04
 				// address += 3;
 			}
-			else if(structure.number = '8'){
+			else if(structure.number == "8"){
 				// \x83\xC4\x08
 				// address += 3;
 			}
 		}
 	}
-	else if(structure.funct ="sub"){
+	else if(structure.funct =="sub"){
 
 	}
-	else if(structure.funct ="imul"){
-		if(structure.reg = "ebx"){
+	else if(structure.funct =="imul"){
+		if(structure.reg == "ebx"){
 			// \xF7\xEB
 			//address += 2;
 		}
 	}
-	else if(structure.funct ="idiv"){
-		if(structure.reg = "ebx"){
+	else if(structure.funct =="idiv"){
+		if(structure.reg == "ebx"){
 			// \xF7\xFB
 			//address += 2;
 		}
 	}
-	else if(structure.funct ="jmp"){
+	else if(structure.funct =="jmp"){
 
 	}
-	else if(structure.funct ="mov"){
+	else if(structure.funct =="mov"){
 
 	}
-	else if(structure.funct ="cdq"){
+	else if(structure.funct =="cdq"){
 		// \x99
 		// address += 1;
 	}
-	else if(structure.funct ="jl"){
+	else if(structure.funct =="jl"){
 
 	}
-	else if(structure.funct ="cmp"){
-		if(structure.reg = "eax"){
+	else if(structure.funct =="cmp"){
+		if(structure.reg == "eax"){
 			// \x83\xF8\x00
 			// address += 3;
 		}
 	}
-	else if(structure.funct ="jg"){
+	else if(structure.funct =="jg"){
 
 	}
-	else if(structure.funct ="je"){
+	else if(structure.funct =="je"){
 
 	}
-	else if(structure.funct ="push"){
-		if(structure.reg = "eax"){
+	else if(structure.funct =="push"){
+		if(structure.reg == "eax"){
 			// \x50
 			// address += 1;
-		}else if(structure.reg ="ebx"){
+		}else if(structure.reg =="ebx"){
 			// \x53
 			// address += 1;
-		}else if(structure.reg ="ecx"){
+		}else if(structure.reg =="ecx"){
 			// \x51
 			// address += 1;
-		}else if(structure.reg ="edx"){
+		}else if(structure.reg =="edx"){
 			// \x52
 			// address += 1;
-		}else if(structure.reg ="ebp"){
+		}else if(structure.reg =="ebp"){
 			// \x55
 			// address += 1;
-		}else if(structure.reg ="esp"){
+		}else if(structure.reg =="esp"){
 			// \x54
 			// address += 1;
-		}else if(structure.reg ="edi"){
+		}else if(structure.reg =="edi"){
 			// \x57
 			// address += 1;
-		}else if(structure.reg ="esi"){
+		}else if(structure.reg =="esi"){
 			// \x56
 			// address += 1;
 		}
 
 	}
-	else if(structure.funct ="call"){
+	else if(structure.funct =="call"){
 
 	}
-	else if(structure.funct ="pop"){
-		if(structure.reg = "eax"){
-			// \x58
-			// address += 1;
-		}else if(structure.reg ="ebx"){
-			// \x5b
-			// address += 1;
-		}else if(structure.reg ="ecx"){
-			// \x59
-			// address += 1;
-		}else if(structure.reg ="edx"){
-			// \x5a
-			// address += 1;
-		}else if(structure.reg ="ebp"){
-			// \x5d
-			// address += 1;
-		}else if(structure.reg ="esp"){
-			// \x5c
-			// address += 1;
-		}else if(structure.reg ="edi"){
-			// \x5f
-			// address += 1;
-		}else if(structure.reg ="esi"){
-			// \x5e
-			// address += 1;
+	else if(structure.funct =="pop"){
+		if(structure.reg == "eax"){
+			char code = '\x58';
+			address += 1;
 		}
 	}
 }
 
 
-void Montador::printFuncoes(){
-	string line;
-	ifstream funcoes("funcoes.asm");
-	while(getline(funcoes,line)){
-		IA32File << line << endl;
-	}
+// void Montador::printFuncoes(){
+// 	string line;
+// 	ifstream funcoes("funcoes.asm");
+// 	while(getline(funcoes,line)){
+// 		IA32File << line << endl;
+// 	}
 
-}
+// }
 
-void Montador::dataSintaxe(string line){
-	lineStruct structure;
-	structure = lineStructure(line);
+// void Montador::dataSintaxe(string line){
+// 	lineStruct structure;
+// 	structure = lineStructure(line);
 
-	cout<<line << "    " << structure.lineCode << endl;
+// 	cout<<line << "    " << structure.lineCode << endl;
 
-	if(!structure.rot.empty()){
-		string rot = structure.rot;
-		rot.pop_back();
-		IA32File << rot << " ";
-	}
+// 	// if(!structure.rot.empty()){
+// 	// 	string rot = structure.rot;
+// 	// 	rot.pop_back();
+// 	// 	IA32File << rot << " ";
+// 	// }
 
-	if(!structure.directive.empty()){
-		if(structure.directive == "const"){
-			if(!structure.number.empty()){
-				IA32File << "dd " << structure.number << endl; 
-			}
-			else if(!structure.character.empty()){
-				IA32File << "dd " << structure.character << endl;
-			}
-		}
-		else if(structure.directive == "space"){
-			int n = 1;
-			if(!structure.number.empty()){
-				n = stoi(structure.number);
-			}
-			IA32File << "dd"; 
-			for(int i=0; i<n; ++i){
-				IA32File << " 0";
-				if(i < n-1){
-					IA32File << ",";
-				}
-			}
-			IA32File << endl;
-		}
+// 	// if(!structure.directive.empty()){
+// 	// 	if(structure.directive == "const"){
+// 	// 		if(!structure.number.empty()){
+// 	// 			IA32File << "dd " << structure.number << endl; 
+// 	// 		}
+// 	// 		else if(!structure.character.empty()){
+// 	// 			IA32File << "dd " << structure.character << endl;
+// 	// 		}
+// 	// 	}
+// 	// 	else if(structure.directive == "space"){
+// 	// 		int n = 1;
+// 	// 		if(!structure.number.empty()){
+// 	// 			n = stoi(structure.number);
+// 	// 		}
+// 	// 		IA32File << "dd"; 
+// 	// 		for(int i=0; i<n; ++i){
+// 	// 			IA32File << " 0";
+// 	// 			if(i < n-1){
+// 	// 				IA32File << ",";
+// 	// 			}
+// 	// 		}
+// 	// 		IA32File << endl;
+// 	// 	}
 
-	}
-}
+// 	// }
+// }
 
 
-void Montador::transformIA32(string filename){
-	string filename1 = filename + ".pre";
-	string filename2 = filename + ".s";
+// void Montador::transformIA32(string filename){
+// 	string filename1 = filename + ".pre";
+// 	string filename2 = filename + ".s";
 
-	ifstream textFile(filename1);
-	IA32File.open(filename2);
-	string line;
-	int section = 0;
+// 	ifstream textFile(filename1);
+// 	IA32File.open(filename2);
+// 	string line;
+// 	int section = 0;
 
-	if(!textFile.is_open()){
-		cout << "Nao foi possivel abrir arquivo " << filename1 << endl;
-	}
-	if(!IA32File.is_open()){
-		cout << "Nao foi possivel abrir arquivo " << filename2 << endl;
-	}
+// 	if(!textFile.is_open()){
+// 		cout << "Nao foi possivel abrir arquivo " << filename1 << endl;
+// 	}
+// 	if(!IA32File.is_open()){
+// 		cout << "Nao foi possivel abrir arquivo " << filename2 << endl;
+// 	}
 
-	while(getline(textFile,line)){
-		string line2 = lowerCase(line);
+// 	while(getline(textFile,line)){
+// 		string line2 = lowerCase(line);
 
-		if(line2.find("section") != string::npos){
-			if(lowerCase(line) == "section text"){
-				IA32File << "section .text" << endl;
-				IA32File << "global _start" << endl;
-				IA32File << "_start:" << endl;
-				section = 1;
-				continue;
-			}
-			else if(lowerCase(line) == "section data"){
-				printFuncoes();
-				IA32File << "section .data" << endl;
-				section = 2;
-				continue;
-			}
-			else{
-				section = 3;
-			}
-		}
-		if(section == 1){
-			textSintaxe(line2);
-		}
-		if(section == 2){
-			dataSintaxe(line2);
-		}
+// 		if(line2.find("section") != string::npos){
+// 			if(lowerCase(line) == "section text"){
+// 				IA32File << "section .text" << endl;
+// 				IA32File << "global _start" << endl;
+// 				IA32File << "_start:" << endl;
+// 				section = 1;
+// 				continue;
+// 			}
+// 			else if(lowerCase(line) == "section data"){
+// 				//printFuncoes();
+// 				IA32File << "section .data" << endl;
+// 				section = 2;
+// 				continue;
+// 			}
+// 			else{
+// 				section = 3;
+// 			}
+// 		}
+// 		if(section == 1){
+// 			textSintaxe(line2);
+// 		}
+// 		if(section == 2){
+// 			dataSintaxe(line2);
+// 		}
 
-	}
+// 	}
 
-	textFile.close();
-}
+// 	textFile.close();
+// }
 
-void Montador::run(string filename){
-	transformIA32(filename);
+// void Montador::run(string filename){
+// 	transformIA32(filename);
 
-}
+// }
