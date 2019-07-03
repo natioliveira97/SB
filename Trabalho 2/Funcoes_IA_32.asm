@@ -167,10 +167,20 @@ ret
 EscreverString:
 enter 0,0
 
+mov esi,1
+acha_enter:
+mov eax,[ebp+8]
+cmp byte [eax+esi-1],0ah
+je  imprime_s
+inc esi
+cmp esi,[ebp+12]
+jl acha_enter
+
+imprime_s:
 mov eax,4
 mov ebx,1
 mov ecx,[ebp+8]
-mov edx,[ebp+12]
+mov edx,esi
 int 80h
 
 leave

@@ -281,13 +281,13 @@ void Compilador::transformIA32(string filename){
 		if(line2.find("section") != string::npos){
 			if(lowerCase(line) == "section text"){
 				IA32File << "section .text" << endl;
+				printFuncoes();
 				IA32File << "global _start" << endl;
 				IA32File << "_start:" << endl;
 				section = 1;
 				continue;
 			}
 			else if(lowerCase(line) == "section data"){
-				printFuncoes();
 				IA32File << "section .data" << endl;
 				section = 2;
 				continue;
