@@ -2,57 +2,93 @@
 
 using namespace std;
 
+/** \brief Escreve no arquivo a função correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::add(lineStruct structure){
 	IA32File << "add eax, [" << structure.notDefined[0] << "]" << endl;
 }
 
+/** \brief Escreve no arquivo a função correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::sub(lineStruct structure){
 	IA32File << "sub eax, [" << structure.notDefined[0] << "]" << endl;
 }
 
+/** \brief Escreve no arquivo as funções correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::mult(lineStruct structure){
 	IA32File << "mov DWORD ebx, [" << structure.notDefined[0] << "]" << endl;
 	IA32File << "imul ebx" << endl;
 }
 
+/** \brief Escreve no arquivo as funções correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::div(lineStruct structure){
 	IA32File << "cdq" << endl;
 	IA32File << "mov DWORD ebx, [" << structure.notDefined[0] << "]" << endl;
 	IA32File << "idiv ebx" << endl;
 }
 
+/** \brief Escreve no arquivo o conjunto de funções correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::jmp(lineStruct structure){
 	IA32File << "jmp " << structure.notDefined[0] << endl;
 }
 
+/** \brief Escreve no arquivo o conjunto de funções correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::jmpn(lineStruct structure){
 	IA32File << "cmp eax, 0" << endl;
 	IA32File << "jl " << structure.notDefined[0] << endl;
 }
 
+/** \brief Escreve no arquivo o conjunto de funções correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::jmpp(lineStruct structure){
 	IA32File << "cmp eax, 0" << endl;
 	IA32File << "jg " << structure.notDefined[0] << endl;
 }
 
+/** \brief Escreve no arquivo o conjunto de funções correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::jmpz(lineStruct structure){
 	IA32File << "cmp eax, 0" << endl;
 	IA32File << "je " << structure.notDefined[0] << endl;
 }
 
+/** \brief Escreve no arquivo o conjunto de funções correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::copy(lineStruct structure){
 	IA32File << "mov DWORD ebx, [" << structure.notDefined[0] << "]" << endl;
 	IA32File << "mov DWORD [" << structure.notDefined[2] << "]" << ", ebx" << endl;
 }
 
+/** \brief Escreve no arquivo o conjunto de funções correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::load(lineStruct structure){
 	IA32File << "mov DWORD eax, [" << structure.notDefined[0] << "]" << endl;
 }
 
+/** \brief Escreve no arquivo o conjunto de funções correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::store(lineStruct structure){
 	IA32File << "mov DWORD [" << structure.notDefined[0] << "], eax" << endl;
 }
 
+/** \brief Escreve no arquivo o conjunto de funções correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::input(lineStruct structure){
 	IA32File << "push eax" << endl;
 	IA32File << "push " << structure.notDefined[0] << endl;
@@ -62,6 +98,9 @@ void Compilador::input(lineStruct structure){
 	lerInteiro = true;
 }
 
+/** \brief Escreve no arquivo o conjunto de funções correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::output(lineStruct structure){
 	IA32File << "push eax" << endl;
 	IA32File << "push " << structure.notDefined[0] << endl;
@@ -71,6 +110,9 @@ void Compilador::output(lineStruct structure){
 	escreveInteiro = true;
 }
 
+/** \brief Escreve no arquivo o conjunto de funções correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::c_input(lineStruct structure){
 	IA32File << "push eax" << endl;
 	IA32File << "push " << structure.notDefined[0] << endl;
@@ -79,6 +121,9 @@ void Compilador::c_input(lineStruct structure){
 	IA32File << "pop eax" << endl;
 }
 
+/** \brief Escreve no arquivo o conjunto de funções correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::c_output(lineStruct structure){
 	IA32File << "push eax" << endl;
 	IA32File << "push " << structure.notDefined[0] << endl;
@@ -87,6 +132,9 @@ void Compilador::c_output(lineStruct structure){
 	IA32File << "pop eax" << endl;
 }
 
+/** \brief Escreve no arquivo o conjunto de funções correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::h_input(lineStruct structure){
 	IA32File << "push eax" << endl;
 	IA32File << "push " << structure.notDefined[0] << endl;
@@ -95,6 +143,9 @@ void Compilador::h_input(lineStruct structure){
 	IA32File << "pop eax" << endl;
 }
 
+/** \brief Escreve no arquivo o conjunto de funções correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::h_output(lineStruct structure){
 	IA32File << "push eax" << endl;
 	IA32File << "push " << structure.notDefined[0] << endl;
@@ -103,6 +154,9 @@ void Compilador::h_output(lineStruct structure){
 	IA32File << "pop eax" << endl;
 }
 
+/** \brief Escreve no arquivo o conjunto de funções correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::s_input(lineStruct structure){
 	IA32File << "push eax" << endl;
 	IA32File << "push DWORD " << structure.number << endl;
@@ -112,6 +166,9 @@ void Compilador::s_input(lineStruct structure){
 	IA32File << "pop eax" << endl;
 }
 
+/** \brief Escreve no arquivo o conjunto de funções correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::s_output(lineStruct structure){
 	IA32File << "push eax" << endl;
 	IA32File << "push DWORD " << structure.number << endl;
@@ -121,12 +178,18 @@ void Compilador::s_output(lineStruct structure){
 	IA32File << "pop eax" << endl;
 }
 
+/** \brief Escreve no arquivo o conjunto de funções correspondente em IA-32.
+	\param structure Estrutura da linha
+*/
 void Compilador::stop(lineStruct structure){
 	IA32File << "mov eax, 1" << endl;
 	IA32File << "mov ebx, 0" << endl;
 	IA32File << "int 80h" << endl;
 }
 
+/** \brief Verifica a sintaxe da linha e separa os elementos no struct.
+	\param line Linha do arquivo em assembly inventado
+*/
 void Compilador::textSintaxe(string line){
 	lineStruct structure;
 	structure = lineStructure(line);
@@ -207,6 +270,8 @@ void Compilador::textSintaxe(string line){
 
 }
 
+/** \brief Escreve no arquivo as funções de input e output feitas em assembly IA-32.
+*/
 void Compilador::printFuncoes(){
 	string line;
 	ifstream funcoes("funcoes.asm");
@@ -216,6 +281,9 @@ void Compilador::printFuncoes(){
 
 }
 
+/** \brief Transforma a seção de dados do assembly inventado no modelo IA-32 e escreve no arquivo.
+	\param line Linha do arquivo em assembly inventado
+*/
 void Compilador::dataSintaxe(string line){
 	lineStruct structure;
 	structure = lineStructure(line);
@@ -254,7 +322,9 @@ void Compilador::dataSintaxe(string line){
 	}
 }
 
-
+/** \brief Transforma a função asssembly inventado para o correspondente em assembly IA-32 e escreve no arquivo.
+	\param filename Nome do arquivo a ser traduzido.
+*/
 void Compilador::transformIA32(string filename){
 	string filename1 = filename + ".pre";
 	string filename2 = filename + ".s";

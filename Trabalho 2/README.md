@@ -100,3 +100,6 @@ Esse programa recebe um arquivo myprogram.asm e retorna um arquivo em formato as
 Não conseguimos implementar o completamente o tradutor de IA-32 para código máquina.
 Utilizando o comando objdump, obtivemos o código máquina do arquivo teste.s e criamos o executável no formato elf.
 O arquivo resultante se chama teste. Ele imprime o caractere 'a'.
+
+
+Observação: o código de uso da biblioteca elfio foi baseado no código de exemplo da documentação.
