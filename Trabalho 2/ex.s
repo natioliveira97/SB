@@ -82,7 +82,7 @@ mov edx,2
 int 80h
 mov 	 ebx,[ebp+8]
 mov 	 cl,[ebp-2]
-mov 	 [ebx],ecx
+mov 	 [ebx],cl
 leave
 ret
 
@@ -194,6 +194,8 @@ mov	 	 edx,esi
 int 80h
 leave
 ret
+
+
 global _start
 _start:
 push eax
