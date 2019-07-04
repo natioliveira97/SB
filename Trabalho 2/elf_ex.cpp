@@ -1,0 +1,228 @@
+#include <elfio/elfio.hpp>
+#include <iostream>
+using namespace ELFIO;
+int main( void )
+{
+ elfio writer;
+
+ writer.create( ELFCLASS32, ELFDATA2LSB ); 		// Cria um arquivo no padrao 32 bits e little endian
+ writer.set_os_abi( ELFOSABI_LINUX );
+ writer.set_type( ET_EXEC );					// Tipo executável
+ writer.set_machine( EM_386 );
+ section* text_sec = writer.sections.add( ".text" ); // Indica a seção de texto
+ text_sec->set_type( SHT_PROGBITS );
+ text_sec->set_flags( SHF_ALLOC | SHF_EXECINSTR );
+ text_sec->set_addr_align( 0x10 );
+
+ // Código em hexadecimal da seção de texto.
+ char text[] = {  '\xc8', '\x0d', '\x00', '\x00',
+ '\xb8', '\x03', '\x00', '\x00', '\x00',
+ '\xbb', '\x00', '\x00', '\x00', '\x00',
+ '\x89', '\xe9',
+'\x83', '\xe9', '\x0d',
+ '\xba', '\x0d', '\x00', '\x00', '\x00',
+ '\xcd', '\x80',
+ '\x50',
+ '\x29', '\xc0',
+ '\xb9', '\x0a', '\x00', '\x00', '\x00',
+ '\x80', '\x7d', '\xf3', '\x2d',
+ '\x74', '\x07',
+ '\xbe', '\xf3', '\xff', '\xff', '\xff',
+ '\xeb', '\x05',
+ '\xbe', '\xf4', '\xff', '\xff', '\xff',
+ '\x80', '\x6c', '\x35', '\x00', '\x30',
+ '\x29', '\xdb',
+ '\x8a', '\x5c', '\x35', '\x00',
+ '\x01', '\xd8',
+ '\x46',
+ '\x80', '\x7c', '\x35', '\x00', '\x0a',
+ '\x74', '\x04',
+ '\xf7', '\xe9',
+ '\xeb', '\xe7',
+ '\x80', '\x7d', '\xf3', '\x2d',
+ '\x75', '\x07',
+ '\xbb', '\xff', '\xff', '\xff', '\xff',
+ '\xf7', '\xeb',
+ '\x8b', '\x5d', '\x08',
+ '\x89', '\x03',
+ '\x58',
+ '\xc9',
+ '\xc3',
+ '\xc8', '\x00', '\x00', '\x00',
+ '\x8b', '\x5d', '\x08',
+ '\x8b', '\x03',
+ '\x29', '\xf6',
+ '\xb9', '\x0a', '\x00', '\x00', '\x00',
+ '\xbb', '\x01', '\x00', '\x00', '\x00',
+ '\x83', '\xf8', '\x00',
+ '\x7d', '\x07',
+ '\xbb', '\xff', '\xff', '\xff', '\xff',
+ '\xf7', '\xeb',
+ '\x29', '\xd2',
+ '\xf7', '\xf9',
+ '\x83', '\xc2', '\x30',
+ '\x83', '\xec', '\x01',
+ '\x88', '\x14', '\x24',
+ '\x46',
+ '\x83', '\xf8', '\x00',
+ '\x75', '\xed',
+ '\x83', '\xfb', '\x00',
+ '\x7d', '\x08',
+ '\x83', '\xec', '\x01',
+ '\xc6', '\x04', '\x24', '\x2d',
+ '\x46',
+ '\xb8', '\x04', '\x00', '\x00', '\x00',
+ '\xbb', '\x01', '\x00', '\x00', '\x00',
+ '\x89', '\xe1',
+ '\x89', '\xf2',
+ '\xcd', '\x80',
+ '\xc9',
+ '\xc3',
+ '\xc8', '\x02', '\x00', '\x00',
+ '\xb8', '\x03', '\x00', '\x00', '\x00',
+ '\xbb', '\x00', '\x00', '\x00', '\x00',
+ '\x89', '\xe9',
+ '\x83', '\xe9', '\x02',
+ '\xba', '\x02', '\x00', '\x00', '\x00',
+ '\xcd', '\x80',
+ '\x8b', '\x5d', '\x08',
+ '\x8a', '\x4d', '\xfe',
+ '\x88', '\x0b',
+ '\xc9',
+ '\xc3',
+ '\xc8', '\x00', '\x00', '\x00',
+ '\xb8', '\x04', '\x00', '\x00', '\x00',
+ '\xbb', '\x01', '\x00', '\x00', '\x00',
+ '\x8b', '\x4d', '\x08',
+ '\xba', '\x01', '\x00', '\x00', '\x00',
+ '\xcd', '\x80',
+ '\xc9',
+ '\xc3',
+ '\xc8', '\x00', '\x00', '\x00',
+ '\xb8', '\x03', '\x00', '\x00', '\x00',
+ '\xbb', '\x00', '\x00', '\x00', '\x00',
+ '\x8b', '\x4d', '\x08',
+ '\x8b', '\x55', '\x0c',
+ '\xcd', '\x80',
+ '\xc9',
+ '\xc3',
+ '\xc8', '\x00', '\x00', '\x00',
+ '\xbe', '\x01', '\x00', '\x00', '\x00',
+ '\x8b', '\x45', '\x08',
+ '\x80', '\x7c', '\x30', '\xff', '\x0a',
+ '\x74', '\x06',
+ '\x46',
+ '\x3b', '\x75', '\x0c',
+ '\x7c', '\xf0',
+ '\xb8', '\x04', '\x00', '\x00', '\x00',
+ '\xbb', '\x01', '\x00', '\x00', '\x00',
+ '\x8b', '\x4d', '\x08',
+ '\x89', '\xf2',
+ '\xcd', '\x80',
+ '\xc9',
+ '\xc3',
+ '\xc8', '\x09', '\x00', '\x00',
+ '\xb8', '\x03', '\x00', '\x00', '\x00',
+ '\xbb', '\x00', '\x00', '\x00', '\x00',
+ '\x89', '\xe9',
+ '\x83', '\xe9', '\x09',
+ '\xba', '\x09', '\x00', '\x00', '\x00',
+ '\xcd', '\x80',
+ '\x50',
+ '\x29', '\xc0',
+ '\xbe', '\xf7', '\xff', '\xff', '\xff',
+ '\x80', '\x7c', '\x35', '\x00', '\x39',
+ '\x7f', '\x07',
+ '\x80', '\x6c', '\x35', '\x00', '\x30',
+ '\xeb', '\x13',
+ '\x80', '\x7c', '\x35', '\x00', '\x46',
+ '\x7f', '\x07',
+ '\x80', '\x44', '\x35', '\x00', '\xc9',
+ '\xeb', '\x05',
+'\x80', '\x44', '\x35', '\x00', '\xa9',
+ '\x29', '\xdb',
+ '\x8a', '\x5c', '\x35', '\x00',
+ '\x01', '\xd8',
+'\x46',
+ '\x80', '\x7c', '\x35', '\x00', '\x0a',
+ '\x74', '\x05',
+ '\xc1', '\xe0', '\x04',
+ '\xeb', '\xca',
+ '\x8b', '\x5d', '\x08',
+ '\x89', '\x03',
+ '\x58',
+ '\xc9',
+ '\xc3',
+ '\xc8', '\x00', '\x00', '\x00',
+ '\x8b', '\x5d', '\x08',
+ '\x8b', '\x03',
+ '\x29', '\xf6',
+ '\xb9', '\x10', '\x00', '\x00', '\x00',
+ '\x29', '\xd2',
+ '\xf7', '\xf9',
+ '\x83', '\xfa', '\x0a',
+ '\x7d', '\x05',
+ '\x83', '\xc2', '\x30',
+ '\xeb', '\x03',
+ '\x83', '\xc2', '\x57',
+ '\x83', '\xec', '\x01',
+ '\x88', '\x14', '\x24',
+ '\x46',
+'\x83', '\xf8', '\x00',
+ '\x75', '\xe3',
+ '\xb8', '\x04', '\x00', '\x00', '\x00',
+ '\xbb', '\x01', '\x00', '\x00', '\x00',
+ '\x89', '\xe1',
+ '\x89', '\xf2',
+ '\xcd', '\x80',
+ '\xc9',
+ '\xc3',
+ '\x50',
+ '\x68', '\xa0', '\x92', '\x04', '\x08',
+'\xe8', '\x1f', '\xfe', '\xff', '\xff',
+ '\x83', '\xc4', '\x04',
+ '\x58',
+ '\xa1', '\xa0', '\x92', '\x04', '\x08',
+ '\x03', '\x05', '\xa4', '\x92', '\x04', '\x08',
+ '\xa3', '\xa0', '\x92', '\x04', '\x08',
+ '\x50',
+ '\x68', '\xa0', '\x92', '\x04', '\x08',
+ '\xe8', '\x62', '\xfe', '\xff', '\xff',
+ '\x83', '\xc4', '\x04',
+ '\x58',
+ '\x50',
+ '\x68', '\xa0', '\x92', '\x04', '\x08',
+ '\xe8', '\x88', '\xff', '\xff', '\xff',
+ '\x83', '\xc4', '\x04',
+ '\x58',
+ '\xb8', '\x01', '\x00', '\x00', '\x00',
+ '\xbb', '\x00', '\x00', '\x00', '\x00',
+ '\xcd', '\x80'};
+ text_sec->set_data( text, sizeof( text ) );
+ segment* text_seg = writer.segments.add();
+ text_seg->set_type( PT_LOAD );
+ text_seg->set_virtual_address( 0x08048080); // Indica o endereço do começo da seção de texto.
+ text_seg->set_physical_address( 0x08048080);
+ text_seg->set_flags( PF_X | PF_R );
+ text_seg->set_align( 0x1000 );
+
+ text_seg->add_section_index( text_sec->get_index(),
+ text_sec->get_addr_align() );
+ section* data_sec = writer.sections.add( ".data" ); // Indica a seção de dados
+ data_sec->set_type( SHT_PROGBITS );
+ data_sec->set_flags( SHF_ALLOC | SHF_WRITE );
+ data_sec->set_addr_align( 0x4 );
+ char data[] = { '\x00','\x00','\x02','\x00'}; // Código em hexadecimal da seção de dados
+ data_sec->set_data( data, sizeof( data ) );
+ segment* data_seg = writer.segments.add();
+ data_seg->set_type( PT_LOAD );
+ data_seg->set_virtual_address( 0x080492a0); // Endereço do começo da seção de dados.
+ data_seg->set_physical_address( 0x080492a0);
+ data_seg->set_flags( PF_W | PF_R );
+ data_seg->set_align( 0x10 );
+ data_seg->add_section_index( data_sec->get_index(),
+ data_sec->get_addr_align() );
+ writer.set_entry(0x08048256);
+ writer.save( "ex" );
+ return 0;
+}

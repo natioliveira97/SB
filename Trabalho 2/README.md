@@ -81,12 +81,18 @@ Para executar a primeira parte do trabalho faça:
 
 ### Parte 2
 
-Para compilar e executar
+Para compilar e executar 
 
 ```bash
 g++ elf.cpp -o elf && ./elf && chmod +x teste && ./teste
 ```
 
+Para compilar e executar
+
+```bash
+g++ elf_ex.cpp -o elf && ./elf && chmod +x ex && ./ex 
+```
+Este último gera o executável do ex.asm
 
 ## Saída do programa
 
@@ -101,5 +107,7 @@ Não conseguimos implementar o completamente o tradutor de IA-32 para código m�
 Utilizando o comando objdump, obtivemos o código máquina do arquivo teste.s e criamos o executável no formato elf.
 O arquivo resultante se chama teste. Ele imprime o caractere 'a'.
 
+Utilizando o comando objdump, obtivemos o código máquina do arquivo ex.s e criamos o executável no formato elf.
+O arquivo resultante se chama ex.
 
 Observação: o código de uso da biblioteca elfio foi baseado no código de exemplo da documentação.
